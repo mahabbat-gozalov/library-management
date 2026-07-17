@@ -1,0 +1,40 @@
+# 003-create-books-table.yaml
+
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-books-table
+      author: Mahabbat Gozalov
+      changes:
+        - createTable:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isbn
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: VARCHAR(2000)
+              - column:
+                  name: full_quantity
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: available_quantity
+                  type: INTEGER
+                  constraints:
+                    nullable: false

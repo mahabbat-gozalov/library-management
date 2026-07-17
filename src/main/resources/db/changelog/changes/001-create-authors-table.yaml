@@ -1,0 +1,32 @@
+# 001-create-authors-table.yaml
+
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-authors-table
+      author: Mahabbat Gozalov
+      changes:
+        - createTable:
+            tableName: authors
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: summary
+                  type: VARCHAR(500)
+              - column:
+                  name: email
+                  type: VARCHAR(255)

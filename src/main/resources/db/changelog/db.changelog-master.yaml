@@ -1,0 +1,17 @@
+# db.changelog-master.yaml
+
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-authors-table.yaml
+  - include:
+      file: db/changelog/changes/002-create-categories-table.yaml
+  - include:
+      file: db/changelog/changes/003-create-books-table.yaml
+  - include:
+      file: db/changelog/changes/004-create-book-authors-table.yaml
+  - include:
+      file: db/changelog/changes/005-create-book-categories-table.yaml
+  - include:
+      file: db/changelog/changes/006-create-members-table.yaml
+  - include:
+      file: db/changelog/changes/007-create-loans-table.yaml
