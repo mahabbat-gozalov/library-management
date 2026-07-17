@@ -15,3 +15,7 @@ databaseChangeLog:
       file: db/changelog/changes/006-create-members-table.yaml
   - include:
       file: db/changelog/changes/007-create-loans-table.yaml
+  - include:
+      file: db/changelog/changes/008-add-unique-constraint-categories-name.yaml
+  - include:
+      file: db/changelog/changes/009-add-not-null-constraint-loans-loan-date-due-date.yaml

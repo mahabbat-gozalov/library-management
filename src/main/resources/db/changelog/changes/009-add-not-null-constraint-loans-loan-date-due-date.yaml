@@ -1,0 +1,16 @@
+# 009-add-not-null-constraint-loans-loan-date-due-date.yaml
+
+databaseChangeLog:
+  - changeSet:
+      id: 009-add-not-null-constraint-loans-loan-date-due-date
+      author: Mahabbat Gozalov
+      changes:
+        - addNotNullConstraint:
+            tableName: loans
+            columnName: loan_date
+            columnDataType: DATE
+        - addNotNullConstraint:
+            tableName: loans
+            columnName: due_date
+            columnDataType: DATE
+

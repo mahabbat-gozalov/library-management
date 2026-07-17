@@ -1,0 +1,11 @@
+# 008-add-unique-constraint-categories-name.yaml
+
+databaseChangeLog:
+  - changeSet:
+      id: 008-add-unique-constraint-categories-name
+      author: Mahabbat Gozalov
+      changes:
+        - addUniqueConstraint:
+            tableName: categories
+            columnNames: name
+            constraintName: uq_categories_name

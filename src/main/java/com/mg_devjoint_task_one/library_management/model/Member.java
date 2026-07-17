@@ -13,25 +13,114 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column
+    @Column(name = "email")
     private String email;
 
-    @Column
+    @Column(name = "phone")
     private String phone;
 
-    @Column
-    private MemberStatus memberStatus;
+    @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
+    private MemberStatus status;
 
-    @Column
+    @Column(name = "membership_date")
     LocalDate membershipDate;
 
     @OneToMany(mappedBy = "member")
-    private Set<Loan> loans;
+    private Set<Loan> loans = new HashSet<>();
+
+    protected Member() {
+    }
+
+    public static Member create(String firstName, String lastName, String email, String phone) {
+
+        if (firstName == null || lastName == null || email == null || phone == null)
+            throw new IllegalArgumentException("Null argument is not allowed here!");
+
+        Member member = new Member();
+
+        member.setFirstName(firstName);
+        member.setLastName(lastName);
+        member.setEmail(email);
+        member.setPhone(phone);
+        member.setStatus(MemberStatus.ACTIVE);
+        member.setMembershipDate(LocalDate.now());
+
+        return member;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public MemberStatus getStatus() {
+        return status;
+    }
+
+    public LocalDate getMembershipDate() {
+        return membershipDate;
+    }
+
+    public Set<Loan> getLoans() {
+        return Collections.unmodifiableSet(loans);
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setStatus(MemberStatus status) {
+        this.status = status;
+    }
+
+    public void setMembershipDate(LocalDate membershipDate) {
+        this.membershipDate = membershipDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Member member)) return false;
+        return id != null && id.equals(member.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 }
