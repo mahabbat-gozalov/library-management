@@ -1,5 +1,6 @@
 package com.mg_devjoint_task_one.library_management.model;
 
+import com.mg_devjoint_task_one.library_management.exception.InvalidEntityDataException;
 import com.mg_devjoint_task_one.library_management.model.enums.MemberStatus;
 import jakarta.persistence.*;
 
@@ -40,8 +41,15 @@ public class Member {
 
     public static Member create(String firstName, String lastName, String email, String phone) {
 
-        if (firstName == null || lastName == null || email == null || phone == null)
-            throw new IllegalArgumentException("Null argument is not allowed here!");
+        if (firstName == null)
+            throw new InvalidEntityDataException("first_name cannot be null!");
+        if (lastName == null)
+            throw new InvalidEntityDataException("last_name cannot be null!");
+        if (email == null)
+            throw new InvalidEntityDataException("email cannot be null!");
+        if (phone == null)
+            throw new InvalidEntityDataException("phone cannot be null!");
+
 
         Member member = new Member();
 

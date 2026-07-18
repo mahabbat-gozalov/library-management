@@ -1,5 +1,6 @@
 package com.mg_devjoint_task_one.library_management.model;
 
+import com.mg_devjoint_task_one.library_management.exception.InvalidEntityDataException;
 import com.mg_devjoint_task_one.library_management.model.enums.LoanPeriod;
 import jakarta.persistence.*;
 
@@ -37,7 +38,14 @@ public class Loan {
 
     public static Loan create(Book book, Member member, LoanPeriod loanPeriod) {
 
-        if (book == null || member == null || loanPeriod == null) throw new IllegalArgumentException("null arguments is not allowed");
+        if (book == null)
+            throw new InvalidEntityDataException("book cannot be null");
+
+        if (member == null)
+            throw new InvalidEntityDataException("member cannot be null");
+
+        if (loanPeriod == null)
+            throw new InvalidEntityDataException("loan_period cannot be null");
 
         LocalDate loanDate = LocalDate.now();
 
