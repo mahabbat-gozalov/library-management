@@ -1,5 +1,6 @@
 package com.mg_devjoint_task_one.library_management.model;
 
+import com.mg_devjoint_task_one.library_management.exception.InvalidEntityDataException;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -30,8 +31,10 @@ public class Author {
     }
 
     public static Author create(String firstName, String lastName, String summary, String email, Set<Book> initialBookSet) {
-        if (firstName == null || lastName == null)
-            throw new IllegalArgumentException("firstName and lastName must be non-null");
+        if (firstName == null)
+            throw new InvalidEntityDataException("firstName and lastName must be non-null");
+        if (lastName == null)
+            throw new InvalidEntityDataException("firstName and lastName must be non-null");
 
 
         Author author = new Author();

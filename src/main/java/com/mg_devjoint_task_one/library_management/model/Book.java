@@ -1,5 +1,6 @@
 package com.mg_devjoint_task_one.library_management.model;
 
+import com.mg_devjoint_task_one.library_management.exception.InvalidEntityDataException;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -49,9 +50,10 @@ public class Book {
     }
 
     public static Book create(String title, String isbn, String description, Integer fullQuantity, Set<Author> initialAuthorSet, Set<Category> initialCategorySet) {
-        if (title == null) throw new IllegalArgumentException("title cannot be null");
-        if (isbn == null) throw new IllegalArgumentException("isbn cannot be null");
-        if (fullQuantity == null) throw new IllegalArgumentException("fullQuantity cannot be null");
+        if (title == null) throw new InvalidEntityDataException("title cannot be null");
+        if (isbn == null) throw new InvalidEntityDataException("isbn cannot be null");
+        if (fullQuantity == null) throw new InvalidEntityDataException("fullQuantity cannot be null");
+
 
         Book book = new Book();
         book.setTitle(title);

@@ -1,5 +1,6 @@
 package com.mg_devjoint_task_one.library_management.model;
 
+import com.mg_devjoint_task_one.library_management.exception.InvalidEntityDataException;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -24,7 +25,7 @@ public class Category {
     }
 
     public static Category create(String name, String description, Set<Book> initialBookSet) {
-        if (name == null) throw new IllegalArgumentException("name cannot be null");
+        if (name == null) throw new InvalidEntityDataException("name cannot be null");
 
 
         Category category = new Category();
