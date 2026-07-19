@@ -1,5 +1,8 @@
 package com.mg_devjoint_task_one.library_management.service;
 
+import com.mg_devjoint_task_one.library_management.dto.request.CreateBookRequest;
+import com.mg_devjoint_task_one.library_management.dto.request.UpdateBookRequest;
+import com.mg_devjoint_task_one.library_management.dto.response.BookResponse;
 import com.mg_devjoint_task_one.library_management.model.Book;
 
 import java.util.Set;
@@ -7,7 +10,20 @@ import java.util.UUID;
 
 public interface BookService {
 
-    Set<Book> getBookSetByIdSet(Set<UUID> idSet);
+    BookResponse createBook(CreateBookRequest request);
 
-    void save(Book book);
+    BookResponse updateBook(UUID bookId, UpdateBookRequest request);
+
+    BookResponse getBookById(UUID bookId);
+
+    void activateBookById(UUID bookId);
+
+    void deactivateBookById(UUID bookId);
+
+    void deleteBookById(UUID bookId);
+
+    void suspendBookById(UUID bookId);
+
+    Book getBookEntityById(UUID bookId);
+
 }

@@ -1,6 +1,7 @@
 package com.mg_devjoint_task_one.library_management.model;
 
 import com.mg_devjoint_task_one.library_management.exception.InvalidEntityDataException;
+import com.mg_devjoint_task_one.library_management.model.enums.BookStatus;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -27,6 +28,9 @@ public class Book {
     @Column(name = "available_quantity")
     private Integer availableQuantity;
 
+    @Column(name = "status")
+    private BookStatus status;
+
     @ManyToMany
     @JoinTable(
             name = "book_authors",
@@ -49,11 +53,11 @@ public class Book {
     protected Book() {
     }
 
-    public static Book create(String title, String isbn, String description, Integer fullQuantity, Set<Author> initialAuthorSet, Set<Category> initialCategorySet) {
+    public static Book create(String title, String isbn, String description, Integer fullQuantity, BookStatus status ,Set<Author> initialAuthorSet, Set<Category> initialCategorySet) {
         if (title == null) throw new InvalidEntityDataException("title cannot be null");
         if (isbn == null) throw new InvalidEntityDataException("isbn cannot be null");
         if (fullQuantity == null) throw new InvalidEntityDataException("fullQuantity cannot be null");
-
+        if (status == null) throw new InvalidEntityDataException("bookStatus cannot be null");
 
         Book book = new Book();
         book.setTitle(title);
@@ -61,6 +65,7 @@ public class Book {
         book.setDescription(description);
         book.setFullQuantity(fullQuantity);
         book.setAvailableQuantity(fullQuantity);
+        book.setStatus(status);
 
         if (initialCategorySet != null)
             initialCategorySet.forEach(book::addCategory);
@@ -119,6 +124,10 @@ public class Book {
         return availableQuantity;
     }
 
+    public BookStatus getStatus() {
+        return status;
+    }
+
     public Set<Author> getAuthors() {
         return Collections.unmodifiableSet(authors);
     }
@@ -149,6 +158,10 @@ public class Book {
 
     public void setAvailableQuantity(Integer availableQuantity) {
         this.availableQuantity = availableQuantity;
+    }
+
+    public void setStatus(BookStatus status) {
+        this.status = status;
     }
 
     @Override
