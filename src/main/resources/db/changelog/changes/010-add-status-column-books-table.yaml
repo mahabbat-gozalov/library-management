@@ -1,0 +1,17 @@
+# 010-add-status-column-books-table.yaml
+
+databaseChangeLog:
+  - changeSet:
+      id: 010-add-status-column-books-table
+      author: Mahabbat Gozalov
+      changes:
+        - addColumn:
+            tableName: books
+            columns:
+              - column:
+                  name: status
+                  type: varchar(30)
+                  defaultValue: INACTIVE
+                  constraints:
+                    nullable: false
+
