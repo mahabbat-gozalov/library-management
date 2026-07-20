@@ -2,7 +2,7 @@ package com.mg_devjoint_task_one.library_management.service.impl;
 
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateCategoryRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateCategoryRequest;
-import com.mg_devjoint_task_one.library_management.dto.request.enums.CollectionUpdateMode;
+import com.mg_devjoint_task_one.library_management.dto.enums.CollectionUpdateMode;
 import com.mg_devjoint_task_one.library_management.dto.response.CategoryResponse;
 import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
 import com.mg_devjoint_task_one.library_management.mapper.CategoryMapper;

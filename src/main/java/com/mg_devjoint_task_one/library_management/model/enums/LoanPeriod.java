@@ -1,8 +1,8 @@
 package com.mg_devjoint_task_one.library_management.model.enums;
 
 public enum LoanPeriod {
-    STANDARD(14),
     SHORT(7),
+    STANDARD(14),
     EXTENDED(21);
 
     private final int days;

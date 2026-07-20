@@ -1,8 +1,8 @@
 package com.mg_devjoint_task_one.library_management.service.impl;
 
+import com.mg_devjoint_task_one.library_management.dto.enums.CollectionUpdateMode;
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateBookRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateBookRequest;
-import com.mg_devjoint_task_one.library_management.dto.request.enums.CollectionUpdateMode;
 import com.mg_devjoint_task_one.library_management.dto.response.BookResponse;
 import com.mg_devjoint_task_one.library_management.exception.*;
 import com.mg_devjoint_task_one.library_management.mapper.BookMapper;
@@ -173,12 +173,12 @@ public class BookServiceImpl implements BookService {
         bookEntityById.setStatus(BookStatus.DELETED);
     }
 
-
     @Override
     public Book getBookEntityById(UUID bookId) {
         return bookRepository.findById(bookId)
                 .orElseThrow(() -> new NotFoundException("Book not found with id " + bookId));
     }
+
 
 }
 

@@ -1,4 +1,5 @@
 # 007-create-loans-table.yaml
+# TODO: add not null constraints to columns loan date due date
 
 databaseChangeLog:
   - changeSet:
