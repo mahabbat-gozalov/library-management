@@ -1,4 +1,4 @@
-package com.mg_devjoint_task_one.library_management.dto.request;
+package com.mg_devjoint_task_one.library_management.dto.request.update;
 
 import com.mg_devjoint_task_one.library_management.dto.request.enums.CollectionUpdateMode;
 import jakarta.validation.constraints.*;
