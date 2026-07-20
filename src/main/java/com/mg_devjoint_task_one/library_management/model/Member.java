@@ -31,7 +31,7 @@ public class Member {
     private MemberStatus status;
 
     @Column(name = "membership_date")
-    LocalDate membershipDate;
+    private LocalDate membershipDate;
 
     @OneToMany(mappedBy = "member")
     private Set<Loan> loans = new HashSet<>();
@@ -42,9 +42,9 @@ public class Member {
     public static Member create(String firstName, String lastName, String email, String phone) {
 
         if (firstName == null)
-            throw new InvalidEntityDataException("first_name cannot be null!");
+            throw new InvalidEntityDataException("firstName cannot be null!");
         if (lastName == null)
-            throw new InvalidEntityDataException("last_name cannot be null!");
+            throw new InvalidEntityDataException("lastName cannot be null!");
         if (email == null)
             throw new InvalidEntityDataException("email cannot be null!");
         if (phone == null)
