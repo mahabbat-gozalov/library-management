@@ -53,7 +53,7 @@ public class Book {
     protected Book() {
     }
 
-    public static Book create(String title, String isbn, String description, Integer fullQuantity, BookStatus status ,Set<Author> initialAuthorSet, Set<Category> initialCategorySet) {
+    public static Book create(String title, String isbn, String description, Integer fullQuantity, BookStatus status, Set<Author> initialAuthorSet, Set<Category> initialCategorySet) {
         if (title == null) throw new InvalidEntityDataException("title cannot be null");
         if (isbn == null) throw new InvalidEntityDataException("isbn cannot be null");
         if (fullQuantity == null) throw new InvalidEntityDataException("fullQuantity cannot be null");
@@ -98,6 +98,17 @@ public class Book {
         if (author == null || !authors.contains(author)) return;
         authors.remove(author);
         author.removeBook(this);
+    }
+
+    public void decreaseAvailableQuantity() {
+        if (this.availableQuantity < 1) throw new InvalidEntityDataException("Not enough quantity");
+        this.availableQuantity--;
+    }
+
+    public void increaseAvailableQuantity() {
+        if (Objects.equals(this.availableQuantity, this.fullQuantity))
+            throw new InvalidEntityDataException("Available quantity exceeds full quantity");
+        this.availableQuantity++;
     }
 
     public UUID getId() {
@@ -175,4 +186,6 @@ public class Book {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+
 }

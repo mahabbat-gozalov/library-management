@@ -35,17 +35,13 @@ public class Loan {
     protected Loan() {
     }
 
-
     public static Loan create(Book book, Member member, LoanPeriod loanPeriod) {
 
-        if (book == null)
-            throw new InvalidEntityDataException("book cannot be null");
+        if (book == null) throw new InvalidEntityDataException("book cannot be null");
 
-        if (member == null)
-            throw new InvalidEntityDataException("member cannot be null");
+        if (member == null) throw new InvalidEntityDataException("member cannot be null");
 
-        if (loanPeriod == null)
-            throw new InvalidEntityDataException("loan_period cannot be null");
+        if (loanPeriod == null) throw new InvalidEntityDataException("loan_period cannot be null");
 
         LocalDate loanDate = LocalDate.now();
 

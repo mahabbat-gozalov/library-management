@@ -4,6 +4,7 @@ import com.mg_devjoint_task_one.library_management.dto.request.create.CreateBook
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateBookRequest;
 import com.mg_devjoint_task_one.library_management.dto.response.BookResponse;
 import com.mg_devjoint_task_one.library_management.model.Book;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
