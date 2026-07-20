@@ -22,25 +22,25 @@ public class MemberController {
     }
 
     @PostMapping
-    ResponseEntity<MemberResponse> createMember(@Valid @RequestBody CreateMemberRequest request) {
+    public ResponseEntity<MemberResponse> createMember(@Valid @RequestBody CreateMemberRequest request) {
         MemberResponse response = memberService.createMember(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{memberId}")
-    ResponseEntity<MemberResponse> updateMember(@PathVariable UUID memberId, @Valid @RequestBody UpdateMemberRequest request) {
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable UUID memberId, @Valid @RequestBody UpdateMemberRequest request) {
         MemberResponse response = memberService.updateMember(memberId, request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{memberId}")
-    ResponseEntity<MemberResponse> getMemberById(@PathVariable UUID memberId) {
+    public ResponseEntity<MemberResponse> getMemberById(@PathVariable UUID memberId) {
         MemberResponse response = memberService.getMemberById(memberId);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{memberId}")
-    ResponseEntity<Void> deleteMemberById(@PathVariable UUID memberId) {
+    public ResponseEntity<Void> deleteMemberById(@PathVariable UUID memberId) {
         memberService.deleteMemberById(memberId);
         return ResponseEntity.noContent().build();
     }
