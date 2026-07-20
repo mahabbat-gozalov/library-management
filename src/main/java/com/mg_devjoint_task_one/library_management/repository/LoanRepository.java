@@ -38,4 +38,18 @@ public interface LoanRepository extends JpaRepository<Loan, UUID> {
             @Param("date") LocalDate date
     );
 
+
+
+    @Query(
+            value = """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM loans l
+                    WHERE l.member_id = :memberId
+                      AND l.return_date IS NULL
+                )
+                """,
+            nativeQuery = true
+    )
+    boolean existsUnreturnedLoanByMemberId(@Param("memberId") UUID memberId);
 }
