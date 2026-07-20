@@ -1,7 +1,7 @@
 package com.mg_devjoint_task_one.library_management.service.impl;
 
-import com.mg_devjoint_task_one.library_management.dto.request.CreateBookRequest;
-import com.mg_devjoint_task_one.library_management.dto.request.UpdateBookRequest;
+import com.mg_devjoint_task_one.library_management.dto.request.create.CreateBookRequest;
+import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateBookRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.enums.CollectionUpdateMode;
 import com.mg_devjoint_task_one.library_management.dto.response.BookResponse;
 import com.mg_devjoint_task_one.library_management.exception.*;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {

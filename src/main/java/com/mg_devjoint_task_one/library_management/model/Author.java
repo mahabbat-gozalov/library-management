@@ -30,12 +30,11 @@ public class Author {
     protected Author() {
     }
 
-    public static Author create(String firstName, String lastName, String summary, String email, Set<Book> initialBookSet) {
+    public static Author create(String firstName, String lastName, String summary, String email) {
         if (firstName == null)
             throw new InvalidEntityDataException("firstName and lastName must be non-null");
         if (lastName == null)
             throw new InvalidEntityDataException("firstName and lastName must be non-null");
-
 
         Author author = new Author();
 
@@ -43,9 +42,6 @@ public class Author {
         author.setLastName(lastName);
         author.setSummary(summary);
         author.setEmail(email);
-        if (initialBookSet != null)
-            initialBookSet.forEach(author::addBook);
-
 
         return author;
     }

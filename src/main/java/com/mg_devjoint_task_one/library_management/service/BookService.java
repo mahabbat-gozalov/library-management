@@ -1,11 +1,10 @@
 package com.mg_devjoint_task_one.library_management.service;
 
-import com.mg_devjoint_task_one.library_management.dto.request.CreateBookRequest;
-import com.mg_devjoint_task_one.library_management.dto.request.UpdateBookRequest;
+import com.mg_devjoint_task_one.library_management.dto.request.create.CreateBookRequest;
+import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateBookRequest;
 import com.mg_devjoint_task_one.library_management.dto.response.BookResponse;
 import com.mg_devjoint_task_one.library_management.model.Book;
 
-import java.util.Set;
 import java.util.UUID;
 
 public interface BookService {

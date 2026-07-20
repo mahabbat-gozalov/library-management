@@ -1,10 +1,16 @@
 package com.mg_devjoint_task_one.library_management.service.impl;
 
+import com.mg_devjoint_task_one.library_management.dto.request.create.CreateAuthorRequest;
+import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateAuthorRequest;
+import com.mg_devjoint_task_one.library_management.dto.response.AuthorResponse;
 import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
+import com.mg_devjoint_task_one.library_management.mapper.AuthorMapper;
 import com.mg_devjoint_task_one.library_management.model.Author;
+import com.mg_devjoint_task_one.library_management.model.Book;
 import com.mg_devjoint_task_one.library_management.repository.AuthorRepository;
 import com.mg_devjoint_task_one.library_management.service.AuthorService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,6 +21,50 @@ public class AuthorServiceImpl implements AuthorService {
 
     public AuthorServiceImpl(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
+    }
+
+    @Override
+    public AuthorResponse createAuthor(CreateAuthorRequest request) {
+        Author author = Author.create(request.firstName(), request.lastName(), request.summary(), request.email());
+
+        Author savedAuthor = authorRepository.save(author);
+
+        return AuthorMapper.toAuthorResponse(savedAuthor);
+    }
+
+    @Override
+    public AuthorResponse updateAuthor(UUID authorId, UpdateAuthorRequest request) {
+        Author authorById = getAuthorEntityById(authorId);
+
+        authorById.setFirstName(request.firstName());
+        authorById.setLastName(request.lastName());
+        authorById.setSummary(request.summary());
+        authorById.setEmail(request.email());
+
+        Author savedAuthor = authorRepository.save(authorById);
+
+        return AuthorMapper.toAuthorResponse(savedAuthor);
+    }
+
+    @Override
+    public AuthorResponse getAuthorById(UUID authorId) {
+
+        Author authorById = getAuthorEntityById(authorId);
+
+        return AuthorMapper.toAuthorResponse(authorById);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAuthorById(UUID authorId) {
+        Author authorById = getAuthorEntityById(authorId);
+
+        Set<Book> authorBooks = new HashSet<>(authorById.getBooks());
+
+        authorBooks
+                .forEach(authorById::removeBook);
+
+        authorRepository.delete(authorById);
     }
 
     @Override

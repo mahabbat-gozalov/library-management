@@ -1,13 +1,12 @@
-package com.mg_devjoint_task_one.library_management.dto.request;
+package com.mg_devjoint_task_one.library_management.dto.request.update;
 
-import com.mg_devjoint_task_one.library_management.model.enums.BookStatus;
+import com.mg_devjoint_task_one.library_management.dto.request.enums.CollectionUpdateMode;
 import jakarta.validation.constraints.*;
 
 import java.util.Set;
 import java.util.UUID;
 
-public record CreateBookRequest(
-
+public record UpdateBookRequest(
         @NotBlank(message = "Book title cannot be blank")
         @Size(max = 255, message = "Book title must be at most 255 characters")
         String title,
@@ -25,6 +24,10 @@ public record CreateBookRequest(
 
         Set<@NotNull(message = "Author ID cannot be null") UUID> authorIdSet,
 
-        Set<@NotNull(message = "Category ID cannot be null") UUID> categoryIdSet
+        Set<@NotNull(message = "Category ID cannot be null") UUID> categoryIdSet,
+
+        CollectionUpdateMode authorSetUpdateMode,
+
+        CollectionUpdateMode categorySetUpdateMode
 ) {
 }
