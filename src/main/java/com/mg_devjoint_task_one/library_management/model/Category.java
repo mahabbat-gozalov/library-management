@@ -19,20 +19,18 @@ public class Category {
     private String description;
 
     @ManyToMany(mappedBy = "categories")
-    private Set<Book> books = new HashSet<>();
+    private Set<Book> books;
 
     protected Category() {
     }
 
-    public static Category create(String name, String description, Set<Book> initialBookSet) {
-        if (name == null) throw new InvalidEntityDataException("name cannot be null");
+    public static Category create(String name, String description) {
+        if (name == null) throw new InvalidEntityDataException("Category name cannot be null");
 
         Category category = new Category();
         category.setName(name);
         category.setDescription(description);
-
-        if (initialBookSet != null)
-            initialBookSet.forEach(category::addBook);
+        category.books = new HashSet<>();
 
         return category;
     }

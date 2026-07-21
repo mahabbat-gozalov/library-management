@@ -30,12 +30,11 @@ public class CategoryController {
 
     @Operation(
             summary = "Create a new category",
-            description = "Creates a category and, optionally, associates it with an initial set of books."
+            description = "Creates a category."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Category created successfully"),
-            @ApiResponse(responseCode = "400", description = "Validation error"),
-            @ApiResponse(responseCode = "404", description = "One or more provided book IDs do not exist")
+            @ApiResponse(responseCode = "400", description = "Validation error")
     })
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CreateCategoryRequest request) {
@@ -76,14 +75,11 @@ public class CategoryController {
 
     @Operation(
             summary = "Update an existing category",
-            description = "Updates the name and description of a category, and optionally its associated books. " +
-                    "Book association changes follow the requested update mode: ADD merges the given books into " +
-                    "the existing set, REPLACE removes the current books first and adds only the given ones."
+            description = "Updates the name and description of a category"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Category updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Validation error"),
-            @ApiResponse(responseCode = "404", description = "Category not found, or one or more provided book IDs do not exist")
+            @ApiResponse(responseCode = "400", description = "Validation error")
     })
     @PutMapping("/{categoryId}")
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable(name = "categoryId") UUID categoryId,

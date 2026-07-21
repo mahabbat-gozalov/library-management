@@ -1,6 +1,5 @@
 package com.mg_devjoint_task_one.library_management.service.impl;
 
-import com.mg_devjoint_task_one.library_management.dto.enums.CollectionUpdateMode;
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateCategoryRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateCategoryRequest;
 import com.mg_devjoint_task_one.library_management.dto.response.CategoryResponse;
@@ -9,7 +8,6 @@ import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
 import com.mg_devjoint_task_one.library_management.mapper.CategoryMapper;
 import com.mg_devjoint_task_one.library_management.model.Book;
 import com.mg_devjoint_task_one.library_management.model.Category;
-import com.mg_devjoint_task_one.library_management.repository.BookRepository;
 import com.mg_devjoint_task_one.library_management.repository.CategoryRepository;
 import com.mg_devjoint_task_one.library_management.service.CategoryService;
 import org.springframework.data.domain.*;
@@ -22,31 +20,22 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
-    private final BookRepository bookRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, BookRepository bookRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        this.bookRepository = bookRepository;
     }
 
     @Override
-    @Transactional
     public CategoryResponse createCategory(CreateCategoryRequest request) {
 
-        Set<UUID> initialBookIdSet = request.bookIdSet() == null ? Collections.emptySet() : request.bookIdSet();
-
-        Set<Book> bookSet = getBookEntitySetByIdSet(initialBookIdSet);
-
-        Category category = Category.create(request.name(), request.description(), bookSet);
+        Category category = Category.create(request.name(), request.description());
 
         Category savedCategory = categoryRepository.save(category);
 
         return CategoryMapper.toCategoryResponse(savedCategory);
     }
 
-    //TODO: USE ENTITY GRAPH UNLESS IT WON'T WORK
     @Override
-    @Transactional(readOnly = true)
     public PageResponse<CategoryResponse> getAllCategories(int page, int size) {
         Pageable pageable = getPageable(page, size);
 
@@ -61,25 +50,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryResponse updateCategory(UUID categoryId, UpdateCategoryRequest request) {
 
-        CollectionUpdateMode bookSetUpdateMode = request.bookSetUpdateMode() == null ? CollectionUpdateMode.ADD : request.bookSetUpdateMode();
-
         Category categoryToUpdate = getCategoryEntityById(categoryId);
 
         categoryToUpdate.setName(request.name());
+
         categoryToUpdate.setDescription(request.description());
-
-        if (request.bookIdSet() != null) {
-
-            if (bookSetUpdateMode == CollectionUpdateMode.REPLACE) {
-                Set<Book> currentBooks = new HashSet<>(categoryToUpdate.getBooks());
-
-                currentBooks
-                        .forEach(categoryToUpdate::removeBook);
-            }
-
-            getBookEntitySetByIdSet(request.bookIdSet())
-                    .forEach(categoryToUpdate::addBook);
-        }
 
         return CategoryMapper.toCategoryResponse(categoryToUpdate);
     }
@@ -132,25 +107,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         return categorySet;
 
-    }
-
-    private Set<Book> getBookEntitySetByIdSet(Set<UUID> bookIdSet) {
-        Set<Book> bookSet = new HashSet<>(bookRepository.findAllById(bookIdSet));
-
-        Set<UUID> bookIdSetFromDB = bookSet.stream()
-                .map(Book::getId)
-                .collect(Collectors.toSet());
-
-        Set<UUID> notFoundBookIdSet = bookIdSet.stream()
-                .filter(bookId -> !bookIdSetFromDB.contains(bookId))
-                .collect(Collectors.toSet());
-
-        if (!notFoundBookIdSet.isEmpty())
-            throw new NotFoundException(
-                    "Books not found with ids: " + notFoundBookIdSet
-            );
-
-        return bookSet;
     }
 
     private Pageable getPageable(int pageNumber, int pageSize) {

@@ -89,7 +89,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Set<Author> getAuthorEntitySetByIdSet(Set<UUID> authorIdSet) {
+    public Set<Author> getAuthorSetByIdSet(Set<UUID> authorIdSet) {
 
         Set<Author> authorSet = new HashSet<>(authorRepository.findAllById(authorIdSet));
 

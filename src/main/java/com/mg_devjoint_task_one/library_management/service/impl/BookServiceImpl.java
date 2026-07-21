@@ -37,7 +37,7 @@ public class BookServiceImpl implements BookService {
         Set<UUID> authorIdSet = request.authorIdSet() == null ? Collections.emptySet() : request.authorIdSet();
         Set<UUID> categoryIdSet = request.categoryIdSet() == null ? Collections.emptySet() : request.categoryIdSet();
 
-        Set<Author> authorSet = authorService.getAuthorEntitySetByIdSet(authorIdSet);
+        Set<Author> authorSet = authorService.getAuthorSetByIdSet(authorIdSet);
 
         Set<Category> categorySet = categoryService.getCategorySetByIdSet(categoryIdSet);
 
@@ -114,7 +114,7 @@ public class BookServiceImpl implements BookService {
                         .forEach(bookById::removeAuthor);
             }
 
-            Set<Author> authorSet = authorService.getAuthorEntitySetByIdSet(request.authorIdSet());
+            Set<Author> authorSet = authorService.getAuthorSetByIdSet(request.authorIdSet());
 
             authorSet.forEach(bookById::addAuthor);
         }
