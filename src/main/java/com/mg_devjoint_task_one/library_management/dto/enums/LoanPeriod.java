@@ -1,4 +1,4 @@
-package com.mg_devjoint_task_one.library_management.model.enums;
+package com.mg_devjoint_task_one.library_management.dto.enums;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

@@ -1,6 +1,6 @@
 package com.mg_devjoint_task_one.library_management.dto.request.create;
 
-import com.mg_devjoint_task_one.library_management.model.enums.LoanPeriod;
+import com.mg_devjoint_task_one.library_management.dto.enums.LoanPeriod;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
