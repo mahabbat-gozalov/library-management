@@ -2,7 +2,7 @@ package com.mg_devjoint_task_one.library_management.controller;
 
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateMemberRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateMemberRequest;
-import com.mg_devjoint_task_one.library_management.dto.response.MemberResponse;
+import com.mg_devjoint_task_one.library_management.dto.response.*;
 import com.mg_devjoint_task_one.library_management.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -27,15 +27,25 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/{memberId}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable UUID memberId, @Valid @RequestBody UpdateMemberRequest request) {
-        MemberResponse response = memberService.updateMember(memberId, request);
-        return ResponseEntity.ok(response);
+    @GetMapping
+    public ResponseEntity<PageResponse<MemberResponse>> getAllMembers(@RequestParam(defaultValue = "1") int page,
+                                                                  @RequestParam(defaultValue = "10") int size
+
+    ) {
+        var body = memberService.getAllMembers(page, size);
+
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/{memberId}")
     public ResponseEntity<MemberResponse> getMemberById(@PathVariable UUID memberId) {
         MemberResponse response = memberService.getMemberById(memberId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{memberId}")
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable UUID memberId, @Valid @RequestBody UpdateMemberRequest request) {
+        MemberResponse response = memberService.updateMember(memberId, request);
         return ResponseEntity.ok(response);
     }
 
