@@ -32,7 +32,7 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<PageResponse<CategoryResponse>> getAllCategories(@RequestParam(defaultValue = "1") int page,
-                                                                       @RequestParam(defaultValue = "10") int size
+                                                                           @RequestParam(defaultValue = "10") int size
     ) {
         var body = categoryService.getAllCategories(page, size);
 

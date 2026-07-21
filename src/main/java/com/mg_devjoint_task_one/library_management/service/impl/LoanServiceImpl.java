@@ -2,6 +2,7 @@ package com.mg_devjoint_task_one.library_management.service.impl;
 
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateLoanRequest;
 import com.mg_devjoint_task_one.library_management.dto.response.LoanResponse;
+import com.mg_devjoint_task_one.library_management.dto.response.PageResponse;
 import com.mg_devjoint_task_one.library_management.exception.InvalidOperationException;
 import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
 import com.mg_devjoint_task_one.library_management.mapper.LoanMapper;
@@ -11,6 +12,7 @@ import com.mg_devjoint_task_one.library_management.model.enums.MemberStatus;
 import com.mg_devjoint_task_one.library_management.repository.LoanRepository;
 import com.mg_devjoint_task_one.library_management.service.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +57,16 @@ public class LoanServiceImpl implements LoanService {
         return LoanMapper.toLoanResponse(savedLoan);
     }
 
+    @Override
+    public PageResponse<LoanResponse> getAllLoans(int page, int size) {
+        Pageable pageable = getPageable(page, size);
+
+        Page<Loan> allLoans = loanRepository.findAll(pageable);
+
+        Page<LoanResponse> allLoanResponses = allLoans.map(LoanMapper::toLoanResponse);
+
+        return PageResponse.of(allLoanResponses);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -121,5 +133,13 @@ public class LoanServiceImpl implements LoanService {
     private boolean hasMemberOverdueLoans(Member member) {
         return loanRepository
                 .existsOverdueLoanByMemberId(member.getId(), LocalDate.now());
+    }
+
+    private Pageable getPageable(int pageNumber, int pageSize) {
+
+        pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+        pageSize = pageSize <= 0 ? 10 : pageSize;
+
+        return PageRequest.of(pageNumber - 1, pageSize);
     }
 }
