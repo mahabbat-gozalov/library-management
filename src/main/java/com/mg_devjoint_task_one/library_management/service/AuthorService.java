@@ -21,7 +21,7 @@ public interface AuthorService {
 
     Author getAuthorEntityById(UUID authorId);
 
-    Set<Author> getAuthorEntitySetByIdSet(Set<UUID> authorIdSet);
+    Set<Author> getAuthorSetByIdSet(Set<UUID> authorIdSet);
 
     PageResponse<AuthorResponse> getAllAuthors(int page, int size);
 }

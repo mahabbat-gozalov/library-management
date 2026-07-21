@@ -14,16 +14,10 @@ public final class CategoryMapper {
 
     public static CategoryResponse toCategoryResponse(Category category) {
 
-        Set<UUID> categoryBookIdSet = category.getBooks()
-                .stream()
-                .map(Book::getId)
-                .collect(Collectors.toSet());
-
         return new CategoryResponse(
                 category.getId(),
                 category.getName(),
-                category.getDescription(),
-                categoryBookIdSet);
+                category.getDescription());
 
     }
 

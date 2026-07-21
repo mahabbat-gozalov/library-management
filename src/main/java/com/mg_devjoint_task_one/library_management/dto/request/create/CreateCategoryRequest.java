@@ -21,17 +21,6 @@ public record CreateCategoryRequest(
                 requiredMode = Schema.RequiredMode.NOT_REQUIRED
         )
         @Size(max = 500, message = "Category description must be at most 500 characters")
-        String description,
-
-        @Schema(
-                description = """
-                        Optional list of books IDs. Can be omitted or empty, but if provided, elements cannot be null.
-                        """,
-                example = """
-                        ["febb76e0-4510-4270-b21d-b7d6ae0e1b18", "3ca7627f-e392-402f-b876-f66a308affdc"]
-                        """,
-                requiredMode = Schema.RequiredMode.NOT_REQUIRED
-        )
-        Set<@NotNull(message = "Book ID cannot be null") UUID> bookIdSet
+        String description
 ) {
 }
