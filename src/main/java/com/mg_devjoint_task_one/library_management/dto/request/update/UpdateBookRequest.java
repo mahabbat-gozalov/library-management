@@ -6,6 +6,7 @@ import jakarta.validation.constraints.*;
 
 import java.util.Set;
 import java.util.UUID;
+
 @Schema(description = "Request body for updating an existing book")
 public record UpdateBookRequest(
 
@@ -68,13 +69,14 @@ public record UpdateBookRequest(
 
         @Schema(
                 description = "Defines whether to add to or replace the existing set of authors",
-                example = "REPLACE"
+                example = "REPLACE", requiredMode = Schema.RequiredMode.NOT_REQUIRED
         )
         CollectionUpdateMode authorSetUpdateMode,
 
         @Schema(
                 description = "Defines whether to add to or replace the existing set of categories",
-                example = "ADD"
+                example = "ADD",
+                requiredMode = Schema.RequiredMode.NOT_REQUIRED
         )
         CollectionUpdateMode categorySetUpdateMode
 ) {

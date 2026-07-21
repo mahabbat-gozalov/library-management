@@ -8,13 +8,14 @@ import com.mg_devjoint_task_one.library_management.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-
+@Tag(name = "Books", description = "Book management endpoints")
 @RestController
 @RequestMapping("/api/v1/books")
 public class BookController {
