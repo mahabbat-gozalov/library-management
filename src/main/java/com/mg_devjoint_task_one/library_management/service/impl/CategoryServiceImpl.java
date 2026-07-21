@@ -1,9 +1,10 @@
 package com.mg_devjoint_task_one.library_management.service.impl;
 
+import com.mg_devjoint_task_one.library_management.dto.enums.CollectionUpdateMode;
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateCategoryRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateCategoryRequest;
-import com.mg_devjoint_task_one.library_management.dto.enums.CollectionUpdateMode;
 import com.mg_devjoint_task_one.library_management.dto.response.CategoryResponse;
+import com.mg_devjoint_task_one.library_management.dto.response.PageResponse;
 import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
 import com.mg_devjoint_task_one.library_management.mapper.CategoryMapper;
 import com.mg_devjoint_task_one.library_management.model.Book;
@@ -11,6 +12,7 @@ import com.mg_devjoint_task_one.library_management.model.Category;
 import com.mg_devjoint_task_one.library_management.repository.BookRepository;
 import com.mg_devjoint_task_one.library_management.repository.CategoryRepository;
 import com.mg_devjoint_task_one.library_management.service.CategoryService;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +44,16 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryMapper.toCategoryResponse(savedCategory);
     }
 
+    @Override
+    public PageResponse<CategoryResponse> getAllCategories(int page, int size) {
+        Pageable pageable = getPageable(page, size);
 
+        Page<Category> allCategories = categoryRepository.findAll(pageable);
+
+        Page<CategoryResponse> allCategoryResponses = allCategories.map(CategoryMapper::toCategoryResponse);
+
+        return PageResponse.of(allCategoryResponses);
+    }
 
     @Override
     @Transactional
@@ -120,6 +131,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categorySet;
 
     }
+
     private Set<Book> getBookEntitySetByIdSet(Set<UUID> bookIdSet) {
         Set<Book> bookSet = new HashSet<>(bookRepository.findAllById(bookIdSet));
 
@@ -137,6 +149,14 @@ public class CategoryServiceImpl implements CategoryService {
             );
 
         return bookSet;
+    }
+
+    private Pageable getPageable(int pageNumber, int pageSize) {
+
+        pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+        pageSize = pageSize <= 0 ? 10 : pageSize;
+
+        return PageRequest.of(pageNumber - 1, pageSize);
     }
 
 }

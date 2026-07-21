@@ -4,12 +4,14 @@ import com.mg_devjoint_task_one.library_management.dto.enums.CollectionUpdateMod
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateBookRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateBookRequest;
 import com.mg_devjoint_task_one.library_management.dto.response.BookResponse;
+import com.mg_devjoint_task_one.library_management.dto.response.PageResponse;
 import com.mg_devjoint_task_one.library_management.exception.*;
 import com.mg_devjoint_task_one.library_management.mapper.BookMapper;
 import com.mg_devjoint_task_one.library_management.model.*;
 import com.mg_devjoint_task_one.library_management.model.enums.BookStatus;
 import com.mg_devjoint_task_one.library_management.repository.BookRepository;
 import com.mg_devjoint_task_one.library_management.service.*;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +54,26 @@ public class BookServiceImpl implements BookService {
         Book savedBook = bookRepository.save(book);
 
         return BookMapper.toBookResponse(savedBook);
+    }
+
+    @Override
+    public PageResponse<BookResponse> getAllBooks(int page, int size) {
+
+        Pageable pageable = getPageable(page, size);
+
+        Page<Book> allBooks = bookRepository.findAll(pageable);
+
+        Page<BookResponse> allBookResponses = allBooks.map(BookMapper::toBookResponse);
+
+        return PageResponse.of(allBookResponses);
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BookResponse getBookById(UUID bookId) {
+        Book bookEntityById = getBookEntityById(bookId);
+        return BookMapper.toBookResponse(bookEntityById);
     }
 
     @Override
@@ -110,13 +132,6 @@ public class BookServiceImpl implements BookService {
         }
 
         return BookMapper.toBookResponse(bookById);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public BookResponse getBookById(UUID bookId) {
-        Book bookEntityById = getBookEntityById(bookId);
-        return BookMapper.toBookResponse(bookEntityById);
     }
 
     @Override
@@ -179,6 +194,13 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new NotFoundException("Book not found with id " + bookId));
     }
 
+    private Pageable getPageable(int pageNumber, int pageSize) {
+
+        pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+        pageSize = pageSize <= 0 ? 10 : pageSize;
+
+        return PageRequest.of(pageNumber - 1, pageSize);
+    }
 
 }
 

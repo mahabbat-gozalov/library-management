@@ -3,6 +3,7 @@ package com.mg_devjoint_task_one.library_management.controller;
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateBookRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateBookRequest;
 import com.mg_devjoint_task_one.library_management.dto.response.BookResponse;
+import com.mg_devjoint_task_one.library_management.dto.response.PageResponse;
 import com.mg_devjoint_task_one.library_management.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -27,17 +28,26 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/{bookId}")
-    public ResponseEntity<BookResponse> updateBook(@PathVariable UUID bookId,
-                                                   @Valid @RequestBody UpdateBookRequest request) {
+    @GetMapping
+    public ResponseEntity<PageResponse<BookResponse>> getAllBooks(@RequestParam(defaultValue = "1") int page,
+                                                                  @RequestParam(defaultValue = "10") int size
+    ) {
+        var body = bookService.getAllBooks(page, size);
 
-        BookResponse response = bookService.updateBook(bookId, request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/{bookId}")
     public ResponseEntity<BookResponse> getBookById(@PathVariable UUID bookId) {
         BookResponse response = bookService.getBookById(bookId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{bookId}")
+    public ResponseEntity<BookResponse> updateBook(@PathVariable UUID bookId,
+                                                   @Valid @RequestBody UpdateBookRequest request) {
+
+        BookResponse response = bookService.updateBook(bookId, request);
         return ResponseEntity.ok(response);
     }
 

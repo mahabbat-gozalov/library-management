@@ -2,7 +2,7 @@ package com.mg_devjoint_task_one.library_management.controller;
 
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateCategoryRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateCategoryRequest;
-import com.mg_devjoint_task_one.library_management.dto.response.CategoryResponse;
+import com.mg_devjoint_task_one.library_management.dto.response.*;
 import com.mg_devjoint_task_one.library_management.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +30,27 @@ public class CategoryController {
         return ResponseEntity.status(CREATED).body(response);
     }
 
-    @PutMapping("/{categoryId}")
-    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable(name = "categoryId") UUID categoryId, @Valid @RequestBody UpdateCategoryRequest request) {
+    @GetMapping
+    public ResponseEntity<PageResponse<CategoryResponse>> getAllCategories(@RequestParam(defaultValue = "1") int page,
+                                                                           @RequestParam(defaultValue = "10") int size
+    ) {
+        var body = categoryService.getAllCategories(page, size);
 
-        CategoryResponse response = categoryService.updateCategory(categoryId, request);
-
-        return ResponseEntity.status(OK).body(response);
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable(name = "categoryId") UUID categoryId) {
 
         CategoryResponse response = categoryService.getCategoryById(categoryId);
+
+        return ResponseEntity.status(OK).body(response);
+    }
+
+    @PutMapping("/{categoryId}")
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable(name = "categoryId") UUID categoryId, @Valid @RequestBody UpdateCategoryRequest request) {
+
+        CategoryResponse response = categoryService.updateCategory(categoryId, request);
 
         return ResponseEntity.status(OK).body(response);
     }

@@ -3,12 +3,14 @@ package com.mg_devjoint_task_one.library_management.service.impl;
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateAuthorRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateAuthorRequest;
 import com.mg_devjoint_task_one.library_management.dto.response.AuthorResponse;
+import com.mg_devjoint_task_one.library_management.dto.response.PageResponse;
 import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
 import com.mg_devjoint_task_one.library_management.mapper.AuthorMapper;
 import com.mg_devjoint_task_one.library_management.model.Author;
 import com.mg_devjoint_task_one.library_management.model.Book;
 import com.mg_devjoint_task_one.library_management.repository.AuthorRepository;
 import com.mg_devjoint_task_one.library_management.service.AuthorService;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,26 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public PageResponse<AuthorResponse> getAllAuthors(int page, int size) {
+
+        Pageable pageable = getPageable(page, size);
+
+        Page<Author> allAuthors = authorRepository.findAll(pageable);
+
+        Page<AuthorResponse> allAuthorResponses = allAuthors.map(AuthorMapper::toAuthorResponse);
+
+        return PageResponse.of(allAuthorResponses);
+    }
+
+    @Override
+    public AuthorResponse getAuthorById(UUID authorId) {
+
+        Author authorById = getAuthorEntityById(authorId);
+
+        return AuthorMapper.toAuthorResponse(authorById);
+    }
+
+    @Override
     public AuthorResponse updateAuthor(UUID authorId, UpdateAuthorRequest request) {
         Author authorById = getAuthorEntityById(authorId);
 
@@ -44,14 +66,6 @@ public class AuthorServiceImpl implements AuthorService {
         Author savedAuthor = authorRepository.save(authorById);
 
         return AuthorMapper.toAuthorResponse(savedAuthor);
-    }
-
-    @Override
-    public AuthorResponse getAuthorById(UUID authorId) {
-
-        Author authorById = getAuthorEntityById(authorId);
-
-        return AuthorMapper.toAuthorResponse(authorById);
     }
 
     @Override
@@ -95,6 +109,14 @@ public class AuthorServiceImpl implements AuthorService {
         }
 
         return authorSet;
+    }
+
+    private Pageable getPageable(int pageNumber, int pageSize) {
+
+        pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+        pageSize = pageSize <= 0 ? 10 : pageSize;
+
+        return PageRequest.of(pageNumber - 1, pageSize);
     }
 
 }

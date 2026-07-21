@@ -3,6 +3,7 @@ package com.mg_devjoint_task_one.library_management.service.impl;
 import com.mg_devjoint_task_one.library_management.dto.request.create.CreateMemberRequest;
 import com.mg_devjoint_task_one.library_management.dto.request.update.UpdateMemberRequest;
 import com.mg_devjoint_task_one.library_management.dto.response.MemberResponse;
+import com.mg_devjoint_task_one.library_management.dto.response.PageResponse;
 import com.mg_devjoint_task_one.library_management.exception.InvalidOperationException;
 import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
 import com.mg_devjoint_task_one.library_management.mapper.MemberMapper;
@@ -11,6 +12,7 @@ import com.mg_devjoint_task_one.library_management.model.enums.MemberStatus;
 import com.mg_devjoint_task_one.library_management.repository.LoanRepository;
 import com.mg_devjoint_task_one.library_management.repository.MemberRepository;
 import com.mg_devjoint_task_one.library_management.service.MemberService;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -37,6 +39,24 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public PageResponse<MemberResponse> getAllMembers(int page, int size) {
+        Pageable pageable = getPageable(page, size);
+
+        Page<Member> allMembers = memberRepository.findAll(pageable);
+
+        Page<MemberResponse> allMemberResponses = allMembers.map(MemberMapper::toMemberResponse);
+
+        return PageResponse.of(allMemberResponses);
+    }
+
+    @Override
+    public MemberResponse getMemberById(UUID memberId) {
+        Member member = getMemberEntityById(memberId);
+
+        return MemberMapper.toMemberResponse(member);
+    }
+
+    @Override
     public MemberResponse updateMember(UUID memberId, UpdateMemberRequest request) {
 
         Member member = getMemberEntityById(memberId);
@@ -49,13 +69,6 @@ public class MemberServiceImpl implements MemberService {
         Member savedMember = memberRepository.save(member);
 
         return MemberMapper.toMemberResponse(savedMember);
-    }
-
-    @Override
-    public MemberResponse getMemberById(UUID memberId) {
-        Member member = getMemberEntityById(memberId);
-
-        return MemberMapper.toMemberResponse(member);
     }
 
     @Override
@@ -113,5 +126,12 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new NotFoundException("Member not found with id " + memberId));
     }
 
+    private Pageable getPageable(int pageNumber, int pageSize) {
+
+        pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+        pageSize = pageSize <= 0 ? 10 : pageSize;
+
+        return PageRequest.of(pageNumber - 1, pageSize);
+    }
 
 }
