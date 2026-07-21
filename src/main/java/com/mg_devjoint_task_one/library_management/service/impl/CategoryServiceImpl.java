@@ -44,7 +44,9 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryMapper.toCategoryResponse(savedCategory);
     }
 
+    //TODO: USE ENTITY GRAPH UNLESS IT WON'T WORK
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<CategoryResponse> getAllCategories(int page, int size) {
         Pageable pageable = getPageable(page, size);
 

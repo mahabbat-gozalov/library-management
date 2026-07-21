@@ -1,7 +1,7 @@
 package com.mg_devjoint_task_one.library_management.model;
 
 import com.mg_devjoint_task_one.library_management.exception.InvalidEntityDataException;
-import com.mg_devjoint_task_one.library_management.model.enums.LoanPeriod;
+import com.mg_devjoint_task_one.library_management.dto.enums.LoanPeriod;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

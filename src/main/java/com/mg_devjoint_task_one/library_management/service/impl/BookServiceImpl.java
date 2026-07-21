@@ -56,6 +56,7 @@ public class BookServiceImpl implements BookService {
         return BookMapper.toBookResponse(savedBook);
     }
 
+    // TODO: USE ENTITY GRAPH. THEN APPLY IT ALL GETALLX METHODS IN ALL SERVICE CLASSES
     @Override
     public PageResponse<BookResponse> getAllBooks(int page, int size) {
 
@@ -152,7 +153,7 @@ public class BookServiceImpl implements BookService {
         Book bookEntityById = getBookEntityById(bookId);
 
         if (bookEntityById.getStatus() != BookStatus.ACTIVE) {
-            throw new InvalidOperationException("Only active books can be activated. Current status: " + bookEntityById.getStatus());
+            throw new InvalidOperationException("Only active books can be deactivated. Current status: " + bookEntityById.getStatus());
         }
 
         bookEntityById.setStatus(BookStatus.INACTIVE);
@@ -178,7 +179,7 @@ public class BookServiceImpl implements BookService {
         int onLoan = bookEntityById.getFullQuantity() - bookEntityById.getAvailableQuantity();
 
         if (onLoan > 0) {
-            throw new InvalidOperationException("Cannot delete the book because one or more copies are still on loan. Current status: " + bookEntityById.getStatus());
+            throw new InvalidOperationException("Cannot delete the book because one or more copies are still on loan.");
         }
 
         if (bookEntityById.getStatus() != BookStatus.SUSPENDED) {
