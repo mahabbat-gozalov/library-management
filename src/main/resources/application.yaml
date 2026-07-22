@@ -6,6 +6,9 @@ spring:
     hibernate:
       ddl-auto: none
     open-in-view: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 25
 
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml

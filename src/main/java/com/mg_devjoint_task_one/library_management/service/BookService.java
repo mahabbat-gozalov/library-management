@@ -28,4 +28,6 @@ public interface BookService {
 
     Book getBookEntityById(UUID bookId);
 
+    Book getBookEntityByIdWithAuthorsAndCategories(UUID bookId);
+
 }
