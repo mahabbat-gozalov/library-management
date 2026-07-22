@@ -56,8 +56,8 @@ public class BookServiceImpl implements BookService {
         return BookMapper.toBookResponse(savedBook);
     }
 
-    // TODO: USE ENTITY GRAPH. THEN APPLY IT ALL GETALLX METHODS IN ALL SERVICE CLASSES
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<BookResponse> getAllBooks(int page, int size) {
 
         Pageable pageable = getPageable(page, size);
@@ -73,7 +73,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional(readOnly = true)
     public BookResponse getBookById(UUID bookId) {
-        Book bookEntityById = getBookEntityById(bookId);
+        Book bookEntityById = getBookEntityByIdWithAuthorsAndCategories(bookId);
         return BookMapper.toBookResponse(bookEntityById);
     }
 
@@ -84,7 +84,7 @@ public class BookServiceImpl implements BookService {
         CollectionUpdateMode authorSetUpdateMode = request.authorSetUpdateMode() == null ? CollectionUpdateMode.ADD : request.authorSetUpdateMode();
         CollectionUpdateMode categorySetUpdateMode = request.categorySetUpdateMode() == null ? CollectionUpdateMode.ADD : request.categorySetUpdateMode();
 
-        Book bookById = getBookEntityById(bookId);
+        Book bookById = getBookEntityByIdWithAuthorsAndCategories(bookId);
 
         bookById.setTitle(request.title());
         bookById.setIsbn(request.isbn());
@@ -96,8 +96,9 @@ public class BookServiceImpl implements BookService {
 
         Integer newFullQuantity = request.fullQuantity();
 
-        if (newFullQuantity < onLoan)
+        if (newFullQuantity < onLoan) {
             throw new InvalidEntityDataException("Full quantity cannot be less than borrowed books.");
+        }
 
         Integer newAvailableQuantity = newFullQuantity - onLoan;
 
@@ -138,60 +139,66 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void activateBookById(UUID bookId) {
-        Book bookEntityById = getBookEntityById(bookId);
+        Book bookToActivate = getBookEntityById(bookId);
 
-        if (bookEntityById.getStatus() != BookStatus.INACTIVE) {
-            throw new InvalidOperationException("Only inactive books can be activated. Current status: " + bookEntityById.getStatus());
+        if (bookToActivate.getStatus() != BookStatus.INACTIVE) {
+            throw new InvalidOperationException("Only inactive books can be activated. Current status: " + bookToActivate.getStatus());
         }
 
-        bookEntityById.setStatus(BookStatus.ACTIVE);
+        bookToActivate.setStatus(BookStatus.ACTIVE);
     }
 
     @Override
     @Transactional
     public void deactivateBookById(UUID bookId) {
-        Book bookEntityById = getBookEntityById(bookId);
+        Book bookToDeactivate = getBookEntityById(bookId);
 
-        if (bookEntityById.getStatus() != BookStatus.ACTIVE) {
-            throw new InvalidOperationException("Only active books can be deactivated. Current status: " + bookEntityById.getStatus());
+        if (bookToDeactivate.getStatus() != BookStatus.ACTIVE) {
+            throw new InvalidOperationException("Only active books can be deactivated. Current status: " + bookToDeactivate.getStatus());
         }
 
-        bookEntityById.setStatus(BookStatus.INACTIVE);
+        bookToDeactivate.setStatus(BookStatus.INACTIVE);
     }
 
     @Override
     @Transactional
     public void suspendBookById(UUID bookId) {
-        Book bookEntityById = getBookEntityById(bookId);
+        Book bookToSuspend = getBookEntityById(bookId);
 
-        if (bookEntityById.getStatus() != BookStatus.INACTIVE) {
-            throw new InvalidOperationException("Only inactive books can be suspended. Current status: " + bookEntityById.getStatus());
+        if (bookToSuspend.getStatus() != BookStatus.INACTIVE) {
+            throw new InvalidOperationException("Only inactive books can be suspended. Current status: " + bookToSuspend.getStatus());
         }
 
-        bookEntityById.setStatus(BookStatus.SUSPENDED);
+        bookToSuspend.setStatus(BookStatus.SUSPENDED);
     }
 
     @Override
     @Transactional
     public void deleteBookById(UUID bookId) {
-        Book bookEntityById = getBookEntityById(bookId);
+        Book bookToDelete = getBookEntityById(bookId);
 
-        int onLoan = bookEntityById.getFullQuantity() - bookEntityById.getAvailableQuantity();
+        int onLoan = bookToDelete.getFullQuantity() - bookToDelete.getAvailableQuantity();
 
         if (onLoan > 0) {
             throw new InvalidOperationException("Cannot delete the book because one or more copies are still on loan.");
         }
 
-        if (bookEntityById.getStatus() != BookStatus.SUSPENDED) {
-            throw new InvalidOperationException("Only suspended books can be deleted. Current status: " + bookEntityById.getStatus());
+        if (bookToDelete.getStatus() != BookStatus.SUSPENDED) {
+            throw new InvalidOperationException("Only suspended books can be deleted. Current status: " + bookToDelete.getStatus());
         }
 
-        bookEntityById.setStatus(BookStatus.DELETED);
+        bookToDelete.setStatus(BookStatus.DELETED);
     }
 
     @Override
     public Book getBookEntityById(UUID bookId) {
         return bookRepository.findById(bookId)
+                .orElseThrow(() -> new NotFoundException("Book not found with id " + bookId));
+    }
+
+    @Override
+    public Book getBookEntityByIdWithAuthorsAndCategories(UUID bookId) {
+        return bookRepository.findBookByIdWithAuthorsAndCategories(bookId)
                 .orElseThrow(() -> new NotFoundException("Book not found with id " + bookId));
     }
 
