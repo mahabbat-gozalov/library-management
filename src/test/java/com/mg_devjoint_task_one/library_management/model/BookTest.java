@@ -5,7 +5,7 @@ import com.mg_devjoint_task_one.library_management.exception.InvalidEntityDataEx
 import com.mg_devjoint_task_one.library_management.model.enums.BookStatus;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class BookTest {
@@ -268,6 +268,96 @@ public class BookTest {
     }
 
 
-    //TODO: test add and remove methods
+    @Test
+    void shouldAddAuthorWhenAuthorIsNotNullAndAuthorSetDoesNotContainsTheAuthor() {
+        Author author = Author.create("Arthur", "Clark", null, null);
+
+        String title = "Dune";
+        String isbn = "978-0-441-01359-3";
+        String description = "A science fiction novel";
+        Integer fullQuantity = 10;
+        BookStatus status = BookStatus.INACTIVE;
+
+        Book book = Book.create(
+                title,
+                isbn,
+                description,
+                fullQuantity,
+                status,
+                null,
+                null);
+
+        book.addAuthor(author);
+
+        assertThat(book.getAuthors()).contains(author);
+        assertThat(author.getBooks()).contains(book);
+    }
+
+    @Test
+    void shouldReturnWhenAuthorToAddIsNull() {
+        Book book = Book.create("Dune", "978-0-441-01359-3", "desc", 10, BookStatus.INACTIVE, null, null);
+
+
+        book.addAuthor(null);
+
+        assertThat(book.getAuthors()).isEmpty();
+
+    }
+
+    @Test
+    void shouldReturnWhenAuthorSetAlreadyContainsTheAuthor() {
+        Author author = Author.create("Arthur", "Clark", null, null);
+        Book book = Book.create("Dune", "978-0-441-01359-3", "desc", 10, BookStatus.INACTIVE, null, null);
+
+        book.addAuthor(author);
+        book.addAuthor(author);
+
+        assertThat(book.getAuthors()).contains(author);
+        assertThat(book.getAuthors()).hasSize(1);
+
+    }
+
+    @Test
+    void shouldRemoveWhenAuthorIsNotNullAndAuthorSetContainsTheAuthor() {
+        Author author = Author.create("Arthur", "Clark", null, null);
+        Book book = Book.create("Dune", "978-0-441-01359-3", "desc", 10, BookStatus.INACTIVE, null, null);
+        book.addAuthor(author);
+
+        book.removeAuthor(author);
+
+        assertThat(book.getAuthors()).doesNotContain(author);
+        assertThat(author.getBooks()).doesNotContain(book);
+
+    }
+
+    @Test
+    void shouldReturnWhenAuthorToRemoveIsNull() {
+        Book book = Book.create("Dune", "978-0-441-01359-3", "desc", 10, BookStatus.INACTIVE, null, null);
+
+        Author author = Author.create("Arthur", "Clark", null, null);
+        Author author2 = Author.create("Arthur", "Clark", null, null);
+        book.addAuthor(author);
+        book.addAuthor(author2);
+
+
+        book.removeAuthor(null);
+
+        assertThat(book.getAuthors()).hasSize(2);
+    }
+
+    @Test
+    void shouldReturnWhenAuthorSetDoesNotContainTheAuthor() {
+        Author author = Author.create("Arthur", "Clark", null, null);
+        Book book = Book.create("Dune", "978-0-441-01359-3", "desc", 10, BookStatus.INACTIVE, null, null);
+
+        assertThat(book.getAuthors()).doesNotContain(author);
+        assertThat(author.getBooks()).doesNotContain(book);
+
+        book.removeAuthor(author);
+
+        assertThat(book.getAuthors()).isEmpty();
+        assertThat(author.getBooks()).isEmpty();
+    }
+
 
 }

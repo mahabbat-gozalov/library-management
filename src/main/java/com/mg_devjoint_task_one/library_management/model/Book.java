@@ -76,28 +76,28 @@ public class Book {
         return book;
     }
 
-    public void addCategory(Category category) {
-        if (category == null || categories.contains(category)) return;
-        categories.add(category);
-        category.addBook(this);
-    }
-
     public void addAuthor(Author author) {
         if (author == null || authors.contains(author)) return;
         authors.add(author);
         author.addBook(this);
     }
 
-    public void removeCategory(Category category) {
-        if (category == null || !categories.contains(category)) return;
-        categories.remove(category);
-        category.removeBook(this);
-    }
-
     public void removeAuthor(Author author) {
         if (author == null || !authors.contains(author)) return;
         authors.remove(author);
         author.removeBook(this);
+    }
+
+    public void addCategory(Category category) {
+        if (category == null || categories.contains(category)) return;
+        categories.add(category);
+        category.addBook(this);
+    }
+
+    public void removeCategory(Category category) {
+        if (category == null || !categories.contains(category)) return;
+        categories.remove(category);
+        category.removeBook(this);
     }
 
     public void decreaseAvailableQuantity() {
