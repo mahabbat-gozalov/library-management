@@ -36,9 +36,8 @@ security:
   refresh-token:
     expiration-milliseconds: 2592000000
 
-
 logging:
   level:
-    com.mg_devjoint.library_management: DEBUG
+    com.mg_devjoint_task_one.library_management: DEBUG
 
 member-loans-max-limit: 3
