@@ -1,11 +1,11 @@
 package com.mg_devjoint_task_one.library_management.service.impl;
 
-import com.mg_devjoint.library_management.dto.response.CreateUserResponse;
-import com.mg_devjoint.library_management.exception.DuplicateEmailException;
-import com.mg_devjoint.library_management.exception.NotFoundException;
-import com.mg_devjoint.library_management.model.User;
-import com.mg_devjoint.library_management.repository.UserRepository;
-import com.mg_devjoint.library_management.service.UserService;
+import com.mg_devjoint_task_one.library_management.dto.response.CreateUserResponse;
+import com.mg_devjoint_task_one.library_management.exception.DuplicateEmailException;
+import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
+import com.mg_devjoint_task_one.library_management.model.User;
+import com.mg_devjoint_task_one.library_management.repository.UserRepository;
+import com.mg_devjoint_task_one.library_management.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

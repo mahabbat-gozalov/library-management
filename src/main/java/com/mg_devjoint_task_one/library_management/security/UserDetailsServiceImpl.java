@@ -1,7 +1,7 @@
 package com.mg_devjoint_task_one.library_management.security;
 
-import com.mg_devjoint.library_management.model.User;
-import com.mg_devjoint.library_management.service.UserService;
+import com.mg_devjoint_task_one.library_management.model.User;
+import com.mg_devjoint_task_one.library_management.service.UserService;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 

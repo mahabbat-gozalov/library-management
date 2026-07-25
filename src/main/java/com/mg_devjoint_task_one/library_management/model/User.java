@@ -1,7 +1,7 @@
 package com.mg_devjoint_task_one.library_management.model;
 
 
-import com.mg_devjoint.library_management.model.enums.UserRole;
+import com.mg_devjoint_task_one.library_management.model.enums.UserRole;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

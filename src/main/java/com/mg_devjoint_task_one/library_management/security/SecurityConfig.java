@@ -1,6 +1,6 @@
 package com.mg_devjoint_task_one.library_management.security;
 
-import com.mg_devjoint.library_management.security.infra.JwtService;
+import com.mg_devjoint_task_one.library_management.security.infra.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

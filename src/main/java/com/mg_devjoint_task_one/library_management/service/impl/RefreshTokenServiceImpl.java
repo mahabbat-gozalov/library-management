@@ -1,12 +1,12 @@
 package com.mg_devjoint_task_one.library_management.service.impl;
 
-import com.mg_devjoint.library_management.exception.InvalidTokenException;
-import com.mg_devjoint.library_management.exception.NotFoundException;
-import com.mg_devjoint.library_management.model.RefreshToken;
-import com.mg_devjoint.library_management.model.User;
-import com.mg_devjoint.library_management.repository.RefreshTokenRepository;
-import com.mg_devjoint.library_management.service.RefreshTokenService;
-import com.mg_devjoint.library_management.service.UserService;
+import com.mg_devjoint_task_one.library_management.exception.InvalidTokenException;
+import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
+import com.mg_devjoint_task_one.library_management.model.RefreshToken;
+import com.mg_devjoint_task_one.library_management.model.User;
+import com.mg_devjoint_task_one.library_management.repository.RefreshTokenRepository;
+import com.mg_devjoint_task_one.library_management.service.RefreshTokenService;
+import com.mg_devjoint_task_one.library_management.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

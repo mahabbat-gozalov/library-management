@@ -1,12 +1,13 @@
 package com.mg_devjoint_task_one.library_management.service.impl;
 
-import com.mg_devjoint.library_management.dto.request.*;
-import com.mg_devjoint.library_management.dto.response.*;
-import com.mg_devjoint.library_management.model.RefreshToken;
-import com.mg_devjoint.library_management.model.User;
-import com.mg_devjoint.library_management.security.CustomUserDetails;
-import com.mg_devjoint.library_management.security.infra.JwtService;
-import com.mg_devjoint.library_management.service.*;
+import com.mg_devjoint_task_one.library_management.dto.request.*;
+import com.mg_devjoint_task_one.library_management.dto.request.create.CreateUserRequest;
+import com.mg_devjoint_task_one.library_management.dto.response.*;
+import com.mg_devjoint_task_one.library_management.model.RefreshToken;
+import com.mg_devjoint_task_one.library_management.model.User;
+import com.mg_devjoint_task_one.library_management.security.CustomUserDetails;
+import com.mg_devjoint_task_one.library_management.security.infra.JwtService;
+import com.mg_devjoint_task_one.library_management.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;

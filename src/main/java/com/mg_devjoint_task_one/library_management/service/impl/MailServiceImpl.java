@@ -1,6 +1,6 @@
 package com.mg_devjoint_task_one.library_management.service.impl;
 
-import com.mg_devjoint.library_management.service.MailService;
+import com.mg_devjoint_task_one.library_management.service.MailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
 package com.mg_devjoint_task_one.library_management.security.infra;
 
-import com.mg_devjoint.library_management.model.enums.UserRole;
+import com.mg_devjoint_task_one.library_management.model.enums.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
