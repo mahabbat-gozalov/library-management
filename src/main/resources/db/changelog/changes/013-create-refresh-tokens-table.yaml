@@ -1,0 +1,51 @@
+# 013-create-refresh-tokens-table.yaml
+
+databaseChangeLog:
+  - changeSet:
+      id: 013-create-refresh-tokens-table
+      author: Mahabbat Gozalov
+      changes:
+        - createTable:
+            tableName: refresh_tokens
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_refresh_tokens_user
+                    referencedTableName: users
+                    referencedColumnNames: id
+                    nullable: false
+
+              - column:
+                  name: refresh_token
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: revoked
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+

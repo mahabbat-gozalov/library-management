@@ -19,3 +19,9 @@ databaseChangeLog:
       file: db/changelog/changes/008-add-unique-constraint-categories-name.yaml
   - include:
       file: db/changelog/changes/009-add-not-null-constraint-loans-loan-date-due-date.yaml
+  - include:
+      file: db/changelog/changes/011-create-users-table.yaml
+  - include:
+      file: db/changelog/changes/012-add-enabled-column-to-users.yaml
+  - include:
+      file: db/changelog/changes/013-create-refresh-tokens-table.yaml

@@ -17,5 +17,28 @@ spring:
     url: jdbc:postgresql://localhost:5432/library_management_db
     username: library_management_user
     password: ${LIBRARY_MANAGEMENT_APP_DB_PASSWORD}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_LIBRARY_APP_USERNAME}
+    password: ${MAIL_LIBRARY_APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+security:
+  jwt-secret-key: ${JWT_USER_SECRET_KEY}
+  access-token:
+    expiration-milliseconds: 900000
+  refresh-token:
+    expiration-milliseconds: 2592000000
+
+
+logging:
+  level:
+    com.mg_devjoint.library_management: DEBUG
 
 member-loans-max-limit: 3
