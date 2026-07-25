@@ -1,0 +1,13 @@
+package com.mg_devjoint_task_one.library_management.service;
+
+
+import com.mg_devjoint.library_management.dto.request.*;
+import com.mg_devjoint.library_management.dto.response.*;
+
+public interface AuthService {
+    LoginResponse login(LoginRequest request);
+
+    RefreshResponse refresh(RefreshRequest request);
+
+    CreateUserResponse createUser(CreateUserRequest request);
+}
