@@ -5,7 +5,6 @@ import com.mg_devjoint.library_management.dto.request.LoginRequest;
 import com.mg_devjoint.library_management.dto.request.RefreshRequest;
 import com.mg_devjoint.library_management.dto.request.create.CreateUserRequest;
 import com.mg_devjoint.library_management.dto.response.*;
-import com.mg_devjoint_task_one.library_management.dto.response.*;
 
 public interface AuthService {
     LoginResponse login(LoginRequest request);

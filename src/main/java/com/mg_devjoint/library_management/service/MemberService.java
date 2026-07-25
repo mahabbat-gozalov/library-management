@@ -4,7 +4,6 @@ import com.mg_devjoint.library_management.dto.request.create.CreateMemberRequest
 import com.mg_devjoint.library_management.dto.request.update.UpdateMemberRequest;
 import com.mg_devjoint.library_management.dto.response.MemberResponse;
 import com.mg_devjoint.library_management.dto.response.PageResponse;
-import com.mg_devjoint_task_one.library_management.dto.response.*;
 import com.mg_devjoint.library_management.model.Member;
 
 import java.util.UUID;
