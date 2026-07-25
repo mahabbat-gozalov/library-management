@@ -68,6 +68,29 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<GlobalExceptionResponse> duplicateEmailExceptionHandler(DuplicateEmailException exception,
+                                                                                  HttpServletRequest request) {
+        GlobalExceptionResponse body = createExceptionBody(
+                HttpStatus.CONFLICT,
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<GlobalExceptionResponse> invalidTokenExceptionHandler(InvalidTokenException exception,
+                                                                                HttpServletRequest request) {
+        GlobalExceptionResponse body = createExceptionBody(
+                HttpStatus.UNAUTHORIZED,
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<GlobalExceptionResponse> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException exception,
                                                                                           HttpServletRequest request) {
