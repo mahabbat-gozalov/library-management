@@ -2,7 +2,6 @@ package com.mg_devjoint.library_management.mapper;
 
 import com.mg_devjoint.library_management.dto.response.BookResponse;
 import com.mg_devjoint.library_management.model.*;
-import com.mg_devjoint_task_one.library_management.model.*;
 
 import java.util.Set;
 import java.util.UUID;
