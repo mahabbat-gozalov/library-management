@@ -1,10 +1,10 @@
-package com.mg_devjoint_task_one.library_management.service.impl;
+package com.mg_devjoint.library_management.service.impl;
 
-import com.mg_devjoint_task_one.library_management.dto.request.create.CreateAuthorRequest;
-import com.mg_devjoint_task_one.library_management.dto.response.AuthorResponse;
-import com.mg_devjoint_task_one.library_management.exception.NotFoundException;
-import com.mg_devjoint_task_one.library_management.model.Author;
-import com.mg_devjoint_task_one.library_management.repository.AuthorRepository;
+import com.mg_devjoint.library_management.dto.request.create.CreateAuthorRequest;
+import com.mg_devjoint.library_management.dto.response.AuthorResponse;
+import com.mg_devjoint.library_management.exception.NotFoundException;
+import com.mg_devjoint.library_management.model.Author;
+import com.mg_devjoint.library_management.repository.AuthorRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
