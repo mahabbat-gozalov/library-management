@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,13 +19,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.List;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final CustomEntryPoint customEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    public SecurityConfig(UserDetailsService userDetailsService, JwtService jwtService) {
+    public SecurityConfig(UserDetailsService userDetailsService, JwtService jwtService, CustomEntryPoint customEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler) {
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
+        this.customEntryPoint = customEntryPoint;
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
 
     @Bean
@@ -39,8 +45,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests
                                 .requestMatchers(
+                                        "/error",
                                         "/api/v1/auth/login",
-                                        "/api/v1/auth/refresh"
+                                        "/api/v1/auth/refresh",
+                                        "/api/v1/auth/logout"
                                 ).permitAll()
 
                                 .requestMatchers(
@@ -48,9 +56,12 @@ public class SecurityConfig {
                                         "/v3/api-docs/**"
                                 ).permitAll()
 
-                                .requestMatchers("/api/v1/**/admin/**").hasAuthority("ROLE_ADMIN")
-
+                                .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
                                 .anyRequest().authenticated()
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 

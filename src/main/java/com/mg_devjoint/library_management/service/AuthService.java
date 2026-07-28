@@ -1,10 +1,13 @@
 package com.mg_devjoint.library_management.service;
 
 
-import com.mg_devjoint.library_management.dto.request.LoginRequest;
-import com.mg_devjoint.library_management.dto.request.RefreshRequest;
+import com.mg_devjoint.library_management.dto.request.*;
 import com.mg_devjoint.library_management.dto.request.create.CreateUserRequest;
 import com.mg_devjoint.library_management.dto.response.*;
+import com.mg_devjoint.library_management.security.CustomUserDetails;
+import jakarta.validation.Valid;
+
+import java.util.UUID;
 
 public interface AuthService {
     LoginResponse login(LoginRequest request);
@@ -12,4 +15,10 @@ public interface AuthService {
     RefreshResponse refresh(RefreshRequest request);
 
     CreateUserResponse createUser(CreateUserRequest request);
+
+    void logout(LogoutRequest request);
+
+    void logoutFromAllDevices(UUID id);
+
+    UserResponse getCurrentUser(CustomUserDetails userDetails);
 }

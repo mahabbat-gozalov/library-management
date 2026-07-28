@@ -20,6 +20,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      User user =   userService.findUserByEmail(username);
 
      return new CustomUserDetails(user);
-
     }
 }
