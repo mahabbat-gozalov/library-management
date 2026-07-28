@@ -39,5 +39,6 @@ security:
 logging:
   level:
     com.mg_devjoint.library_management: DEBUG
+    org.springframework.security: TRACE
 
 member-loans-max-limit: 3

@@ -1,14 +1,14 @@
 package com.mg_devjoint.library_management.service.impl;
 
-import com.mg_devjoint.library_management.dto.request.LoginRequest;
-import com.mg_devjoint.library_management.dto.request.RefreshRequest;
-import com.mg_devjoint.library_management.dto.response.*;
-import com.mg_devjoint.library_management.service.*;
+import com.mg_devjoint.library_management.dto.request.*;
 import com.mg_devjoint.library_management.dto.request.create.CreateUserRequest;
+import com.mg_devjoint.library_management.dto.response.*;
+import com.mg_devjoint.library_management.mapper.UserMapper;
 import com.mg_devjoint.library_management.model.RefreshToken;
 import com.mg_devjoint.library_management.model.User;
 import com.mg_devjoint.library_management.security.CustomUserDetails;
 import com.mg_devjoint.library_management.security.infra.JwtService;
+import com.mg_devjoint.library_management.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.util.UUID;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -26,10 +27,10 @@ public class AuthServiceImpl implements AuthService {
     private final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
 
 
@@ -70,6 +71,26 @@ public class AuthServiceImpl implements AuthService {
         boolean emailSent = mailService.sendTemporaryPasswordEmail(user.getEmail(), temporaryPassword);
 
         return response.withTemporaryPasswordEmailSent(emailSent);
+    }
+
+    @Override
+    public void logout(LogoutRequest request) {
+        RefreshToken refreshTokenByValue = refreshTokenService.getRefreshTokenByValue(request.refreshToken());
+
+        refreshTokenService.revokeRefreshToken(refreshTokenByValue);
+    }
+
+    @Override
+    public void logoutFromAllDevices(UUID userId) {
+        int updatedCount = refreshTokenService.revokeAllRefreshTokensByUser(userId);
+        log.info("{} refresh tokens revoked for user {}", updatedCount, userId);
+    }
+
+    @Override
+    public UserResponse getCurrentUser(CustomUserDetails userDetails) {
+        User user = userDetails.user();
+
+        return UserMapper.toUserResponse(user);
     }
 
 

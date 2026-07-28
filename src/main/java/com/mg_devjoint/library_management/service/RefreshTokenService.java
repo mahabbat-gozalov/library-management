@@ -14,4 +14,6 @@ public interface RefreshTokenService {
     RefreshToken getRefreshTokenByValue(String refreshToken);
 
     void validateRefreshToken(RefreshToken refreshToken);
+
+    int revokeAllRefreshTokensByUser(UUID userId);
 }

@@ -9,6 +9,7 @@ import com.mg_devjoint.library_management.service.RefreshTokenService;
 import com.mg_devjoint.library_management.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -56,6 +57,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+    @Transactional
+    public int revokeAllRefreshTokensByUser(UUID userId) {
+     return    refreshTokenRepository.revokeAllByUserId(userId);
+    }
+
+    @Override
     public RefreshToken getRefreshTokenByValue(String refreshToken) {
 
         return refreshTokenRepository.findByRefreshToken(refreshToken)
@@ -68,11 +75,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-   public void validateRefreshToken(RefreshToken refreshToken) {
+    public void validateRefreshToken(RefreshToken refreshToken) {
         boolean isRefreshTokenValid = isRefreshTokenValid(refreshToken);
 
         if (!isRefreshTokenValid) {
             throw new InvalidTokenException("Invalid refresh token");
         }
     }
+
+
 }
