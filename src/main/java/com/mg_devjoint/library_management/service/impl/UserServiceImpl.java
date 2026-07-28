@@ -50,6 +50,14 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void changePassword(User user, String encodedNewPassword) {
+
+        user.setPassword(encodedNewPassword);
+
+        userRepository.save(user);
+    }
+
     private void validateUniqueEmail(String email) {
         boolean emailExist = isEmailExist(email);
 

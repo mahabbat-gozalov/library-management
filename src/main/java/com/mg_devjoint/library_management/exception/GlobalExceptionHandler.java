@@ -33,6 +33,17 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<GlobalExceptionResponse> invalidPasswordExceptionHandler(InvalidPasswordException exception,
+                                                                                     HttpServletRequest request) {
+        GlobalExceptionResponse body = createExceptionBody(
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     @ExceptionHandler(InvalidEntityDataException.class)
     public ResponseEntity<GlobalExceptionResponse> invalidEntityDataExceptionHandler(InvalidEntityDataException exception,
                                                                                      HttpServletRequest request) {

@@ -1,6 +1,7 @@
 package com.mg_devjoint.library_management.controller;
 
 import com.mg_devjoint.library_management.dto.request.*;
+import com.mg_devjoint.library_management.dto.request.update.ChangePasswordRequest;
 import com.mg_devjoint.library_management.dto.response.*;
 import com.mg_devjoint.library_management.security.CustomUserDetails;
 import com.mg_devjoint.library_management.service.AuthService;
@@ -62,4 +63,9 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @Valid @RequestBody ChangePasswordRequest request) {
+        authService.changePassword(customUserDetails, request);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -43,7 +43,7 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password ,String name, String surname, String phoneNumber, UserRole role) {
+    public User(String email, String password, String name, String surname, String phoneNumber, UserRole role) {
         this.email = email;
         this.password = password;
         this.role = role;
@@ -75,7 +75,7 @@ public class User {
     }
 
     public String getName() {
-    return this.name;
+        return this.name;
     }
 
     public String getSurname() {
@@ -88,5 +88,9 @@ public class User {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -2,7 +2,10 @@ package com.mg_devjoint.library_management.service.impl;
 
 import com.mg_devjoint.library_management.dto.request.*;
 import com.mg_devjoint.library_management.dto.request.create.CreateUserRequest;
+import com.mg_devjoint.library_management.dto.request.update.ChangePasswordRequest;
 import com.mg_devjoint.library_management.dto.response.*;
+import com.mg_devjoint.library_management.exception.InvalidOperationException;
+import com.mg_devjoint.library_management.exception.InvalidPasswordException;
 import com.mg_devjoint.library_management.mapper.UserMapper;
 import com.mg_devjoint.library_management.model.RefreshToken;
 import com.mg_devjoint.library_management.model.User;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -91,6 +95,33 @@ public class AuthServiceImpl implements AuthService {
         User user = userDetails.user();
 
         return UserMapper.toUserResponse(user);
+    }
+
+    @Override
+    public void changePassword(CustomUserDetails customUserDetails, ChangePasswordRequest request) {
+
+        if (Objects.equals(request.oldPassword(), request.newPassword())) {
+            throw new InvalidOperationException("Old password and new password cannot be the same");
+        }
+
+        User user = userService.findUserById(customUserDetails.getId());
+
+        String currentHashedPassword = user.getPassword();
+
+        String claimedOldPassword = request.oldPassword();
+
+        validatePasswordsMatch(claimedOldPassword, currentHashedPassword);
+
+        String encodedNewPassword = passwordEncoder.encode(request.newPassword());
+
+        userService.changePassword(user, encodedNewPassword);
+    }
+
+    private void validatePasswordsMatch(String rawPassword, String encodedPassword) {
+        boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
+        if (!matches) {
+            throw new InvalidPasswordException("Given old password is not correct!");
+        }
     }
 
 
