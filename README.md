@@ -7,6 +7,7 @@ This project is a robust **Java Backend** application developed to manage librar
 ## 🛠 Tech Stack
 * **Language:** Java 21
 * **Framework:** Spring Boot 3.3.3
+* **Security:** Spring Security
 * **ORM:** Spring Data JPA
 * **Database:** PostgreSQL
 * **Migration:** Liquibase
@@ -22,10 +23,10 @@ This system is designed to provide efficient CRUD (Create, Read, Update, Delete)
 ## 📊 Database Schema
 The Entity-Relationship (ER) diagram below illustrates the database architecture.
 
-![Library Management Schema](docs/library-management_db_er_diagram.png)
+![Library Management Schema](docs/library_management_db_er_diagram.png)
 
-*   **View SVG Version:** [Download/View ER Diagram (SVG)](docs/library-management_db_er_diagram.svg)
-*   **Edit Source File:** [Download .drawio Source](docs/library-management_db_er_diagram.drawio)
+*   **View SVG Version:** [Download/View ER Diagram (SVG)](docs/library_management_db_er_diagram.svg)
+*   **Edit Source File:** [Download .drawio Source](docs/library_management_db_er_diagram.drawio)
 
 ---
 

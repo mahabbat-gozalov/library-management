@@ -1,0 +1,25 @@
+package com.mg_devjoint.library_management.dto.request.update;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.*;
+
+@Schema(description = "Payload used to update an existing category")
+public record UpdateCategoryRequest(
+
+        @Schema(description = "Name of the category, must be unique",
+                example = "Science Fiction",
+                requiredMode = Schema.RequiredMode.REQUIRED
+        )
+        @NotBlank(message = "Category name cannot be blank")
+        @Size(max = 100, message = "Category name must be at most 100 characters")
+        String name,
+
+        @Schema(description = "Optional description of the category",
+                example = "Books involving futuristic science and technology",
+                requiredMode = Schema.RequiredMode.NOT_REQUIRED
+        )
+        @Size(max = 500, message = "Category description must be at most 500 characters")
+        String description
+
+) {
+}

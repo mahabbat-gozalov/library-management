@@ -1,0 +1,16 @@
+# 012-add-enabled-column-to-users.yaml
+
+databaseChangeLog:
+  - changeSet:
+      id: 012-add-enabled-column-to-users
+      author: Mahabbat Gozalov
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: enabled
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
