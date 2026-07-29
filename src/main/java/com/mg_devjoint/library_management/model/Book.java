@@ -76,6 +76,18 @@ public class Book {
         return book;
     }
 
+    public static Book createWithId(UUID id, String title, String isbn, String description, Integer fullQuantity, BookStatus status, Set<Author> initialAuthorSet, Set<Category> initialCategorySet) {
+
+        if (id == null) throw new InvalidEntityDataException("ID cannot be null");
+
+        Book book = create(title, isbn, description, fullQuantity, status, initialAuthorSet, initialCategorySet);
+
+        book.id = id;
+
+        return book;
+    }
+
+
     public void addCategory(Category category) {
         if (category == null || categories.contains(category)) return;
         categories.add(category);

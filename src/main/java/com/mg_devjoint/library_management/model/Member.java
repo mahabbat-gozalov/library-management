@@ -63,7 +63,18 @@ public class Member {
         return member;
     }
 
-    public UUID getId() {
+    public static Member createWithId(UUID id, String firstName, String lastName, String email, String phone) {
+        if(id == null) throw new InvalidEntityDataException("ID cannot be null!");
+
+        Member member = create(firstName, lastName, email, phone);
+
+        member.id = id;
+
+        return member;
+    }
+
+
+        public UUID getId() {
         return id;
     }
 

@@ -46,6 +46,17 @@ public class Author {
         return author;
     }
 
+    public static Author createWithId(UUID id, String firstName, String lastName, String summary, String email) {
+        if (id == null) {
+            throw new InvalidEntityDataException("ID must be non-null");
+        }
+
+        Author author = create(firstName, lastName, summary, email);
+        author.id = id;
+        return author;
+    }
+
+
     public void addBook(Book book) {
         if (book == null || this.books.contains(book)) return;
         books.add(book);
