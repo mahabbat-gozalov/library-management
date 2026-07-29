@@ -7,6 +7,9 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.mg_devjoint.library_management.model.validation.CommonValidationUtils.*;
+import static com.mg_devjoint.library_management.model.validation.UserValidationUtils.*;
+
 @Entity
 @Table(name = "USERS")
 public class User {
@@ -40,18 +43,39 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled;
 
-    public User() {
+    protected User() {
     }
 
-    public User(String email, String password, String name, String surname, String phoneNumber, UserRole role) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.name = name;
-        this.surname = surname;
-        this.phoneNumber = phoneNumber;
-        this.createdAt = LocalDateTime.now();
-        this.enabled = true;
+
+    public static User create(String email, String password, UserRole role, String name, String surname, String phoneNumber) {
+
+        validateEmail(email);
+        validatePhoneNumber(phoneNumber);
+        validateUserRole(role);
+        validatePassword(password);
+        validateName(name);
+        validateSurname(surname);
+
+        User user = new User();
+
+        user.email = email;
+        user.password = password;
+        user.role = role;
+        user.name = name;
+        user.surname = surname;
+        user.phoneNumber = phoneNumber;
+
+        return user;
+    }
+
+    public static User createWithId(UUID id, String email, String password, UserRole role, String name, String surname, String phoneNumber) {
+        validateIdCannotBeNull(id);
+
+        User user = create(email, password, role, name, surname, phoneNumber);
+
+        user.id = id;
+
+        return user;
     }
 
     public String getEmail() {
@@ -91,6 +115,8 @@ public class User {
     }
 
     public void setPassword(String password) {
+        validatePassword(password);
         this.password = password;
     }
+
 }

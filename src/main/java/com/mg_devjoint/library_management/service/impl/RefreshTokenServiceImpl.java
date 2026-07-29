@@ -40,18 +40,17 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         LocalDateTime expiryDate = now.plus(Duration.ofMillis(expirationMilliseconds));
 
-        RefreshToken refreshTokenEntity = new RefreshToken(refreshTokenValue, user, expiryDate, now, false);
+        RefreshToken refreshTokenEntity =  RefreshToken.create(refreshTokenValue, user, expiryDate, now);
 
         refreshTokenRepository.save(refreshTokenEntity);
 
         return refreshTokenValue;
-
     }
 
 
     @Override
     public void revokeRefreshToken(RefreshToken refreshToken) {
-        refreshToken.setRevoked(true);
+        refreshToken.revoke();
 
         refreshTokenRepository.save(refreshToken);
     }
