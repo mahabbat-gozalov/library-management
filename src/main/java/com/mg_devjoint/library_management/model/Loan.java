@@ -55,6 +55,17 @@ public class Loan {
         return loan;
     }
 
+
+    public static Loan createWithId(UUID id, Book book, Member member, LoanPeriod loanPeriod){
+        if(id == null) throw new InvalidEntityDataException("ID cannot be null");
+
+        Loan loan = create(book, member, loanPeriod);
+
+        loan.id = id;
+
+        return loan;
+    }
+
     public UUID getId() {
         return id;
     }

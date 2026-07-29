@@ -35,6 +35,18 @@ public class Category {
         return category;
     }
 
+    public static Category createWithId(UUID id, String name, String description) {
+        if (id == null) throw new InvalidEntityDataException("Category id cannot be null");
+
+        Category category = create(name, description);
+
+        category.id = id;
+
+        return category;
+    }
+
+
+
     public void addBook(Book book) {
         if (book == null || this.books.contains(book)) return;
         this.books.add(book);
