@@ -59,14 +59,13 @@ public class AuthServiceImpl implements AuthService {
 
         String encodedInitialPassword = passwordEncoder.encode(temporaryPassword);
 
-        User user = new User(
+        User user =  User.create(
                 request.email(),
                 encodedInitialPassword,
+                request.role(),
                 request.name(),
                 request.surname(),
-                request.phoneNumber(),
-                request.role()
-        );
+                request.phoneNumber());
 
         log.debug("Temporary password for {}: {}", user.getEmail(), temporaryPassword);
 
