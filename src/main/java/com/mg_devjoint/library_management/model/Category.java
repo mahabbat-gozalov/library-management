@@ -1,9 +1,12 @@
 package com.mg_devjoint.library_management.model;
 
-import com.mg_devjoint.library_management.exception.InvalidEntityDataException;
 import jakarta.persistence.*;
 
 import java.util.*;
+
+import static com.mg_devjoint.library_management.model.validation.CategoryValidationUtils.validateCategoryName;
+import static com.mg_devjoint.library_management.model.validation.CategoryValidationUtils.validateDescription;
+import static com.mg_devjoint.library_management.model.validation.CommonValidationUtils.validateIdCannotBeNull;
 
 @Entity
 @Table(name = "CATEGORIES")
@@ -25,18 +28,24 @@ public class Category {
     }
 
     public static Category create(String name, String description) {
-        if (name == null) throw new InvalidEntityDataException("Category name cannot be null");
+
+        validateCategoryName(name);
+        validateDescription(description);
 
         Category category = new Category();
-        category.setName(name);
-        category.setDescription(description);
+
+        category.name = name;
+
+        category.description = description;
+
         category.books = new HashSet<>();
 
         return category;
     }
 
     public static Category createWithId(UUID id, String name, String description) {
-        if (id == null) throw new InvalidEntityDataException("Category id cannot be null");
+
+        validateIdCannotBeNull(id);
 
         Category category = create(name, description);
 
@@ -44,8 +53,6 @@ public class Category {
 
         return category;
     }
-
-
 
     public void addBook(Book book) {
         if (book == null || this.books.contains(book)) return;
@@ -76,10 +83,12 @@ public class Category {
     }
 
     public void setName(String name) {
+        validateCategoryName(name);
         this.name = name;
     }
 
     public void setDescription(String description) {
+        validateDescription(description);
         this.description = description;
     }
 

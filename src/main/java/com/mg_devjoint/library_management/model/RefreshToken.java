@@ -38,11 +38,12 @@ public class RefreshToken {
 
 
     public static RefreshToken create(String refreshTokenValue, User user, LocalDateTime expiresAt, LocalDateTime createdAt) {
-        RefreshToken token = new RefreshToken();
 
         validateTokenValue(refreshTokenValue);
         validateAssociatedUser(user);
         validateCreatedAtAndExpiresAt(createdAt, expiresAt);
+
+        RefreshToken token = new RefreshToken();
 
         token.refreshToken = refreshTokenValue;
         token.user = user;
@@ -54,9 +55,12 @@ public class RefreshToken {
     }
 
     public static RefreshToken createWithId(UUID id, String refreshToken, User user, LocalDateTime expiresAt, LocalDateTime createdAt) {
-        RefreshToken token = create(refreshToken, user, expiresAt, createdAt);
         validateIdCannotBeNull(id);
+
+        RefreshToken token = create(refreshToken, user, expiresAt, createdAt);
+
         token.id = id;
+
         return token;
     }
 
