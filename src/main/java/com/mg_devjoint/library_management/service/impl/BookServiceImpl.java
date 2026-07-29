@@ -6,11 +6,11 @@ import com.mg_devjoint.library_management.dto.request.update.UpdateBookRequest;
 import com.mg_devjoint.library_management.dto.response.BookResponse;
 import com.mg_devjoint.library_management.dto.response.PageResponse;
 import com.mg_devjoint.library_management.exception.*;
-import com.mg_devjoint.library_management.model.*;
-import com.mg_devjoint.library_management.service.*;
 import com.mg_devjoint.library_management.mapper.BookMapper;
+import com.mg_devjoint.library_management.model.*;
 import com.mg_devjoint.library_management.model.enums.BookStatus;
 import com.mg_devjoint.library_management.repository.BookRepository;
+import com.mg_devjoint.library_management.service.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,7 +104,6 @@ public class BookServiceImpl implements BookService {
 
         bookById.setAvailableQuantity(newAvailableQuantity);
         bookById.setFullQuantity(newFullQuantity);
-
 
         if (request.authorIdSet() != null) {
 
@@ -209,6 +208,4 @@ public class BookServiceImpl implements BookService {
 
         return PageRequest.of(pageNumber - 1, pageSize);
     }
-
 }
-
