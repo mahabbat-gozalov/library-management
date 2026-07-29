@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 
 import java.util.*;
 
+import static com.mg_devjoint.library_management.model.validation.BookValidationUtils.*;
+import static com.mg_devjoint.library_management.model.validation.CommonValidationUtils.validateIdCannotBeNull;
+
 @Entity
 @Table(name = "BOOKS")
 public class Book {
@@ -37,7 +40,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
-    private Set<Author> authors = new HashSet<>();
+    private Set<Author> authors;
 
     @ManyToMany
     @JoinTable(
@@ -45,40 +48,51 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private Set<Category> categories = new HashSet<>();
+    private Set<Category> categories;
 
     @OneToMany(mappedBy = "book")
-    private Set<Loan> loans = new HashSet<>();
+    private Set<Loan> loans;
 
     protected Book() {
     }
 
     public static Book create(String title, String isbn, String description, Integer fullQuantity, BookStatus status, Set<Author> initialAuthorSet, Set<Category> initialCategorySet) {
-        if (title == null) throw new InvalidEntityDataException("title cannot be null");
-        if (isbn == null) throw new InvalidEntityDataException("isbn cannot be null");
-        if (fullQuantity == null) throw new InvalidEntityDataException("fullQuantity cannot be null");
-        if (status == null) throw new InvalidEntityDataException("bookStatus cannot be null");
+
+        validateTitle(title);
+        validateIsbn(isbn);
+        validateDescription(description);
+        validateFullQuantity(fullQuantity);
+        validateBookStatus(status);
+        validateInitialAuthorSet(initialAuthorSet);
+        validateInitialCategorySet(initialCategorySet);
 
         Book book = new Book();
-        book.setTitle(title);
-        book.setIsbn(isbn);
-        book.setDescription(description);
-        book.setFullQuantity(fullQuantity);
-        book.setAvailableQuantity(fullQuantity);
-        book.setStatus(status);
 
-        if (initialCategorySet != null)
-            initialCategorySet.forEach(book::addCategory);
+        book.title = title;
+        book.isbn = isbn;
+        book.description = description;
+        book.fullQuantity = fullQuantity;
+        book.availableQuantity = fullQuantity;
+        book.status = status;
 
-        if (initialAuthorSet != null)
+        book.authors = new HashSet<>();
+        book.categories = new HashSet<>();
+        book.loans = new HashSet<>();
+
+        if (initialAuthorSet != null) {
             initialAuthorSet.forEach(book::addAuthor);
+        }
+
+        if (initialCategorySet != null) {
+            initialCategorySet.forEach(book::addCategory);
+        }
 
         return book;
     }
 
     public static Book createWithId(UUID id, String title, String isbn, String description, Integer fullQuantity, BookStatus status, Set<Author> initialAuthorSet, Set<Category> initialCategorySet) {
 
-        if (id == null) throw new InvalidEntityDataException("ID cannot be null");
+        validateIdCannotBeNull(id);
 
         Book book = create(title, isbn, description, fullQuantity, status, initialAuthorSet, initialCategorySet);
 
@@ -164,26 +178,40 @@ public class Book {
     }
 
     public void setTitle(String title) {
+        validateTitle(title);
         this.title = title;
     }
 
     public void setIsbn(String isbn) {
+        validateIsbn(isbn);
         this.isbn = isbn;
     }
 
     public void setDescription(String description) {
+        validateDescription(description);
         this.description = description;
     }
 
     public void setFullQuantity(Integer fullQuantity) {
+        validateFullQuantity(fullQuantity);
         this.fullQuantity = fullQuantity;
     }
 
     public void setAvailableQuantity(Integer availableQuantity) {
+        if (availableQuantity == null) {
+            throw new InvalidEntityDataException("Available quantity cannot be null");
+        }
+        if (availableQuantity < 0) {
+            throw new InvalidEntityDataException("Available quantity cannot be less than 0");
+        }
+        if (availableQuantity > this.fullQuantity) {
+            throw new InvalidEntityDataException("Available quantity cannot exceeds full quantity");
+        }
         this.availableQuantity = availableQuantity;
     }
 
     public void setStatus(BookStatus status) {
+        validateBookStatus(status);
         this.status = status;
     }
 

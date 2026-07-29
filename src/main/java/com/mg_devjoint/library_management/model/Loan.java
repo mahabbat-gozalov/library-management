@@ -1,11 +1,15 @@
 package com.mg_devjoint.library_management.model;
 
-import com.mg_devjoint.library_management.exception.InvalidEntityDataException;
 import com.mg_devjoint.library_management.dto.enums.LoanPeriod;
+import com.mg_devjoint.library_management.exception.InvalidEntityDataException;
+import com.mg_devjoint.library_management.model.validation.CommonValidationUtils;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
+
+import static com.mg_devjoint.library_management.model.validation.CommonValidationUtils.validateIdCannotBeNull;
+import static com.mg_devjoint.library_management.model.validation.LoanValidationUtils.*;
 
 @Entity
 @Table(name = "LOANS")
@@ -37,27 +41,26 @@ public class Loan {
 
     public static Loan create(Book book, Member member, LoanPeriod loanPeriod) {
 
-        if (book == null) throw new InvalidEntityDataException("book cannot be null");
-
-        if (member == null) throw new InvalidEntityDataException("member cannot be null");
-
-        if (loanPeriod == null) throw new InvalidEntityDataException("loan_period cannot be null");
+        validateAssociateBook(book);
+        validateAssociateMember(member);
+        validateLoanPeriod(loanPeriod);
 
         LocalDate loanDate = LocalDate.now();
+        LocalDate dueDate = loanDate.plusDays(loanPeriod.getDays());
 
         Loan loan = new Loan();
 
-        loan.setBook(book);
-        loan.setMember(member);
-        loan.setLoanDate(loanDate);
-        loan.setDueDate(loanDate.plusDays(loanPeriod.getDays()));
+        loan.book = book;
+        loan.member = member;
+        loan.loanDate = loanDate;
+        loan.dueDate = dueDate;
 
         return loan;
     }
 
 
-    public static Loan createWithId(UUID id, Book book, Member member, LoanPeriod loanPeriod){
-        if(id == null) throw new InvalidEntityDataException("ID cannot be null");
+    public static Loan createWithId(UUID id, Book book, Member member, LoanPeriod loanPeriod) {
+        validateIdCannotBeNull(id);
 
         Loan loan = create(book, member, loanPeriod);
 
@@ -98,18 +101,9 @@ public class Loan {
         this.member = member;
     }
 
-    public void setLoanDate(LocalDate loanDate) {
-        this.loanDate = loanDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
     }
-
 
     @Override
     public boolean equals(Object o) {

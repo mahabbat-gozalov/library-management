@@ -1,9 +1,11 @@
 package com.mg_devjoint.library_management.model;
 
-import com.mg_devjoint.library_management.exception.InvalidEntityDataException;
 import jakarta.persistence.*;
 
 import java.util.*;
+
+import static com.mg_devjoint.library_management.model.validation.AuthorValidationUtils.validateSummary;
+import static com.mg_devjoint.library_management.model.validation.CommonValidationUtils.*;
 
 @Entity
 @Table(name = "AUTHORS")
@@ -25,37 +27,41 @@ public class Author {
     private String email;
 
     @ManyToMany(mappedBy = "authors")
-    private Set<Book> books = new HashSet<>();
+    private Set<Book> books;
 
     protected Author() {
     }
 
     public static Author create(String firstName, String lastName, String summary, String email) {
-        if (firstName == null)
-            throw new InvalidEntityDataException("firstName and lastName must be non-null");
-        if (lastName == null)
-            throw new InvalidEntityDataException("firstName and lastName must be non-null");
+
+        validateName(firstName);
+
+        validateSurname(lastName);
+
+        validateSummary(summary);
+
+        if (email != null) validateEmail(email);
 
         Author author = new Author();
 
-        author.setFirstName(firstName);
-        author.setLastName(lastName);
-        author.setSummary(summary);
-        author.setEmail(email);
+        author.firstName = firstName;
+        author.lastName = lastName;
+        author.summary = summary;
+        author.email = email;
+        author.books = new HashSet<>();
 
         return author;
     }
 
     public static Author createWithId(UUID id, String firstName, String lastName, String summary, String email) {
-        if (id == null) {
-            throw new InvalidEntityDataException("ID must be non-null");
-        }
+        validateIdCannotBeNull(id);
 
         Author author = create(firstName, lastName, summary, email);
+
         author.id = id;
+
         return author;
     }
-
 
     public void addBook(Book book) {
         if (book == null || this.books.contains(book)) return;
@@ -94,18 +100,22 @@ public class Author {
     }
 
     public void setFirstName(String firstName) {
+        validateName(firstName);
         this.firstName = firstName;
     }
 
     public void setLastName(String lastName) {
+        validateSurname(lastName);
         this.lastName = lastName;
     }
 
     public void setSummary(String summary) {
+        validateSummary(summary);
         this.summary = summary;
     }
 
     public void setEmail(String email) {
+        if (email != null) validateEmail(email);
         this.email = email;
     }
 
@@ -120,6 +130,5 @@ public class Author {
     public int hashCode() {
         return getClass().hashCode();
     }
-
 
 }

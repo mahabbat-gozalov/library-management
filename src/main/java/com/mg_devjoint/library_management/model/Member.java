@@ -1,11 +1,14 @@
 package com.mg_devjoint.library_management.model;
 
-import com.mg_devjoint.library_management.exception.InvalidEntityDataException;
 import com.mg_devjoint.library_management.model.enums.MemberStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.*;
+
+import static com.mg_devjoint.library_management.model.validation.CommonValidationUtils.*;
+import static com.mg_devjoint.library_management.model.validation.MemberValidationUtils.validateMemberStatus;
+import static com.mg_devjoint.library_management.model.validation.MemberValidationUtils.validateMembershipDate;
 
 @Entity
 @Table(name = "MEMBERS")
@@ -41,30 +44,26 @@ public class Member {
 
     public static Member create(String firstName, String lastName, String email, String phone) {
 
-        if (firstName == null)
-            throw new InvalidEntityDataException("firstName cannot be null!");
-        if (lastName == null)
-            throw new InvalidEntityDataException("lastName cannot be null!");
-        if (email == null)
-            throw new InvalidEntityDataException("email cannot be null!");
-        if (phone == null)
-            throw new InvalidEntityDataException("phone cannot be null!");
-
+        validateName(firstName);
+        validateSurname(lastName);
+        validateEmail(email);
+        validatePhoneNumber(phone);
 
         Member member = new Member();
 
-        member.setFirstName(firstName);
-        member.setLastName(lastName);
-        member.setEmail(email);
-        member.setPhone(phone);
-        member.setStatus(MemberStatus.ACTIVE);
-        member.setMembershipDate(LocalDate.now());
+        member.firstName = firstName;
+        member.lastName = lastName;
+        member.email = email;
+        member.phone = phone;
+        member.status = MemberStatus.ACTIVE;
+        member.membershipDate = LocalDate.now();
 
         return member;
     }
 
     public static Member createWithId(UUID id, String firstName, String lastName, String email, String phone) {
-        if(id == null) throw new InvalidEntityDataException("ID cannot be null!");
+
+        validateIdCannotBeNull(id);
 
         Member member = create(firstName, lastName, email, phone);
 
@@ -74,7 +73,7 @@ public class Member {
     }
 
 
-        public UUID getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -107,26 +106,32 @@ public class Member {
     }
 
     public void setFirstName(String firstName) {
+        validateName(firstName);
         this.firstName = firstName;
     }
 
     public void setLastName(String lastName) {
+        validateSurname(lastName);
         this.lastName = lastName;
     }
 
     public void setEmail(String email) {
+        validateEmail(email);
         this.email = email;
     }
 
     public void setPhone(String phone) {
+        validatePhoneNumber(phone);
         this.phone = phone;
     }
 
     public void setStatus(MemberStatus status) {
+        validateMemberStatus(status);
         this.status = status;
     }
 
     public void setMembershipDate(LocalDate membershipDate) {
+        validateMembershipDate(membershipDate);
         this.membershipDate = membershipDate;
     }
 

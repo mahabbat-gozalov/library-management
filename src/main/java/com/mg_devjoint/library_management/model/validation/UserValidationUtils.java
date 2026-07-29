@@ -20,16 +20,4 @@ public final class UserValidationUtils {
         }
     }
 
-    public static void validateName(final String name) {
-        if (name == null || name.isBlank()) {
-            throw new InvalidEntityDataException("Name cannot be null or blank");
-        }
-    }
-
-    public static void validateSurname(final String surname) {
-        if (surname == null || surname.isBlank()) {
-            throw new InvalidEntityDataException("Surname cannot be null or blank");
-        }
-    }
-
 }
