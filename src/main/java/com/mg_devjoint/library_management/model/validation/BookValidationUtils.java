@@ -1,12 +1,12 @@
 package com.mg_devjoint.library_management.model.validation;
 
+import java.util.Objects;
+import java.util.Set;
+
 import com.mg_devjoint.library_management.exception.InvalidEntityDataException;
 import com.mg_devjoint.library_management.model.Author;
 import com.mg_devjoint.library_management.model.Category;
 import com.mg_devjoint.library_management.model.enums.BookStatus;
-
-import java.util.Objects;
-import java.util.Set;
 
 public final class BookValidationUtils {
     private BookValidationUtils() {
@@ -32,9 +32,8 @@ public final class BookValidationUtils {
     }
 
     public static void validateDescription(String description) {
-        if (description == null || description.isBlank()) {
-            throw new InvalidEntityDataException("Description cannot be null or blank");
-        }
+        if(description == null) return;
+        
         if (description.length() > 2000) {
             throw new InvalidEntityDataException("Description must be at most 2000 characters");
         }

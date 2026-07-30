@@ -1,16 +1,17 @@
 package com.mg_devjoint.library_management.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mg_devjoint.library_management.exception.GlobalExceptionResponse;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDateTime;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mg_devjoint.library_management.exception.GlobalExceptionResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {

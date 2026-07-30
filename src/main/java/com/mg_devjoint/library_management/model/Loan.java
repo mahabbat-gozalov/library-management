@@ -1,15 +1,22 @@
 package com.mg_devjoint.library_management.model;
 
-import com.mg_devjoint.library_management.dto.enums.LoanPeriod;
-import com.mg_devjoint.library_management.exception.InvalidEntityDataException;
-import com.mg_devjoint.library_management.model.validation.CommonValidationUtils;
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
+import com.mg_devjoint.library_management.dto.enums.LoanPeriod;
 import static com.mg_devjoint.library_management.model.validation.CommonValidationUtils.validateIdCannotBeNull;
-import static com.mg_devjoint.library_management.model.validation.LoanValidationUtils.*;
+import static com.mg_devjoint.library_management.model.validation.LoanValidationUtils.validateAssociateBook;
+import static com.mg_devjoint.library_management.model.validation.LoanValidationUtils.validateAssociateMember;
+import static com.mg_devjoint.library_management.model.validation.LoanValidationUtils.validateLoanPeriod;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "LOANS")

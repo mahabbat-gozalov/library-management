@@ -1,10 +1,9 @@
 package com.mg_devjoint.library_management.model.validation;
 
+import java.time.LocalDate;
+
 import com.mg_devjoint.library_management.exception.InvalidEntityDataException;
 import com.mg_devjoint.library_management.model.enums.MemberStatus;
-
-import java.time.LocalDate;
-import java.util.Date;
 
 public final class MemberValidationUtils {
     private MemberValidationUtils() {
