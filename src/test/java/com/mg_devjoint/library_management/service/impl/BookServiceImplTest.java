@@ -17,6 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 public class BookServiceImplTest {
 
@@ -45,13 +49,13 @@ public class BookServiceImplTest {
                 null,
                 null);
 
-        Mockito.when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
 
         // Act
         Book bookEntityById = bookService.getBookEntityById(bookId);
 
         // Assert
-        Assertions.assertThat(bookEntityById)
+        assertThat(bookEntityById)
                 .usingRecursiveComparison()
                 .isEqualTo(book);
 
@@ -64,7 +68,7 @@ public class BookServiceImplTest {
         // Arrange & Act
         UUID bookId = UUID.randomUUID();
 
-        Mockito.when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
 
         // Act & Assert
         Assertions.assertThatThrownBy(() -> bookService.getBookEntityById(bookId))
@@ -80,13 +84,13 @@ public class BookServiceImplTest {
         // Arrange
         Book inactiveBook = getInactiveBook();
 
-        Mockito.when(bookRepository.findById(inactiveBook.getId())).thenReturn(Optional.of(inactiveBook));
+        when(bookRepository.findById(inactiveBook.getId())).thenReturn(Optional.of(inactiveBook));
 
         // Act
         bookService.activateBookById(inactiveBook.getId());
 
         // Assert
-        Assertions.assertThat(inactiveBook.getStatus()).isEqualTo(BookStatus.ACTIVE);
+        assertThat(inactiveBook.getStatus()).isEqualTo(BookStatus.ACTIVE);
         Mockito.verify(bookRepository).findById(inactiveBook.getId());
     }
 
@@ -95,7 +99,7 @@ public class BookServiceImplTest {
         // Arrange
         UUID bookId = UUID.randomUUID();
 
-        Mockito.when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
 
         // Act & Assert
         Assertions.assertThatThrownBy(() -> bookService.activateBookById(bookId))
@@ -110,7 +114,7 @@ public class BookServiceImplTest {
         // Arrange
         Book activeBook = getActiveBook();
 
-        Mockito.when(bookRepository.findById(activeBook.getId())).thenReturn(Optional.of(activeBook));
+        when(bookRepository.findById(activeBook.getId())).thenReturn(Optional.of(activeBook));
 
         // Act & Assert
         Assertions.assertThatThrownBy(() -> bookService.activateBookById(activeBook.getId()))
@@ -124,13 +128,13 @@ public class BookServiceImplTest {
     void deactivateBookById_shouldDeactivateBook_whenBookIsActive() {
         // Arrange
         Book activeBook = getActiveBook();
-        Mockito.when(bookRepository.findById(activeBook.getId())).thenReturn(Optional.of(activeBook));
+        when(bookRepository.findById(activeBook.getId())).thenReturn(Optional.of(activeBook));
 
         // Act
         bookService.deactivateBookById(activeBook.getId());
 
         // Assert
-        Assertions.assertThat(activeBook.getStatus()).isEqualTo(BookStatus.INACTIVE);
+        assertThat(activeBook.getStatus()).isEqualTo(BookStatus.INACTIVE);
         Mockito.verify(bookRepository).findById(activeBook.getId());
     }
 
@@ -138,7 +142,7 @@ public class BookServiceImplTest {
     void deactivateBookById_shouldThrowNotfoundException_whenBookDoesNotExist() {
         // Arrange
         UUID bookId = UUID.randomUUID();
-        Mockito.when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
 
         // Act & Assert
         Assertions.assertThatThrownBy(() -> bookService.deactivateBookById(bookId))
@@ -153,7 +157,7 @@ public class BookServiceImplTest {
     void deactivateBookById_shouldThrowInvalidOperationException_whenBookIsNotActive() {
         // Arrange
         Book inactiveBook = getInactiveBook();
-        Mockito.when(bookRepository.findById(inactiveBook.getId())).thenReturn(Optional.of(inactiveBook));
+        when(bookRepository.findById(inactiveBook.getId())).thenReturn(Optional.of(inactiveBook));
 
         // Act & Assert
         Assertions.assertThatThrownBy(() -> bookService.deactivateBookById(inactiveBook.getId()))
@@ -166,13 +170,13 @@ public class BookServiceImplTest {
     void suspendBookById_shouldSuspendBook_whenBookIsInactive() {
         // Arrange
         Book inactiveBook = getInactiveBook();
-        Mockito.when(bookRepository.findById(inactiveBook.getId())).thenReturn(Optional.of(inactiveBook));
+        when(bookRepository.findById(inactiveBook.getId())).thenReturn(Optional.of(inactiveBook));
 
         // Act
         bookService.suspendBookById(inactiveBook.getId());
 
         // Assert
-        Assertions.assertThat(inactiveBook.getStatus()).isEqualTo(BookStatus.SUSPENDED);
+        assertThat(inactiveBook.getStatus()).isEqualTo(BookStatus.SUSPENDED);
         Mockito.verify(bookRepository).findById(inactiveBook.getId());
     }
 
@@ -180,7 +184,7 @@ public class BookServiceImplTest {
     void suspendBookById_shouldThrowNotfoundException_whenBookDoesNotExist() {
         // Arrange
         UUID bookId = UUID.randomUUID();
-        Mockito.when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
 
         // Act & Assert
         Assertions.assertThatThrownBy(() -> bookService.suspendBookById(bookId))
@@ -196,7 +200,7 @@ public class BookServiceImplTest {
         // Arrange
         Book activeBook = getActiveBook();
 
-        Mockito.when(bookRepository.findById(activeBook.getId())).thenReturn(Optional.of(activeBook));
+        when(bookRepository.findById(activeBook.getId())).thenReturn(Optional.of(activeBook));
 
         // Act & Assert
         Assertions.assertThatThrownBy(() -> bookService.suspendBookById(activeBook.getId()))
@@ -204,6 +208,104 @@ public class BookServiceImplTest {
                 .hasMessage("Only inactive books can be suspended. Current status: " + activeBook.getStatus());
 
         Mockito.verify(bookRepository).findById(activeBook.getId());
+    }
+
+    @Test
+    void deleteBookById_whenBookIsSuspendedAndOnLoanIsZero() {
+        // Arrange
+        UUID bookId = UUID.randomUUID();
+
+        Book book = Book.createWithId(
+                bookId, "Book",
+                "123456789",
+                "this is a book",
+                10,
+                BookStatus.SUSPENDED,
+                null,
+                null
+        );
+
+        BookStatus expectedStatus = BookStatus.DELETED;
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+        // Act
+        bookService.deleteBookById(bookId);
+
+        // Assert
+        assertThat(book.getStatus()).isEqualTo(expectedStatus);
+
+        Mockito.verify(bookRepository).findById(bookId);
+    }
+
+    @Test
+    void deleteBookById_shouldThrowNotfoundException_whenBookDoesNotExist() {
+
+        // Arrange
+        UUID bookId = UUID.randomUUID();
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThatThrownBy(() -> bookService.deleteBookById(bookId))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("Book not found with id " + bookId);
+
+        Mockito.verify(bookRepository).findById(bookId);
+    }
+
+    @Test
+    void deleteBookById_shouldThrowInvalidOperationException_whenOnLoanGreaterThanZero() {
+
+        // Arrange
+        UUID bookId = UUID.randomUUID();
+
+        Book book = Book.createWithId(
+                bookId, "Book",
+                "123456789",
+                "this is a book",
+                10,
+                BookStatus.SUSPENDED,
+                null,
+                null
+        );
+
+        book.setAvailableQuantity(5);
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+        // Act & Assert
+        assertThatThrownBy(() -> bookService.deleteBookById(bookId))
+                .isInstanceOf(InvalidOperationException.class)
+                .hasMessage("Cannot delete the book because one or more copies are still on loan.");
+
+        Mockito.verify(bookRepository).findById(bookId);
+    }
+
+    @Test
+    void deleteBookById_shouldThrowInvalidOperationException_whenBookStatusIsNotSuspended() {
+
+        // Arrange
+        UUID bookId = UUID.randomUUID();
+
+        Book book = Book.createWithId(
+                bookId, "Book",
+                "123456789",
+                "this is a book",
+                10,
+                BookStatus.ACTIVE,
+                null,
+                null
+        );
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+
+        // Act & Assert
+        assertThatThrownBy(() -> bookService.deleteBookById(bookId))
+                .isInstanceOf(InvalidOperationException.class)
+                .hasMessage("Only suspended books can be deleted. Current status: " + book.getStatus());
+
+        Mockito.verify(bookRepository).findById(bookId);
     }
 
     private Book getInactiveBook() {
@@ -266,15 +368,15 @@ public class BookServiceImplTest {
                 Collections.emptySet()
         );
 
-        Mockito.when(bookRepository.save(Mockito.any(Book.class))).thenReturn(book);
-        Mockito.when(authorService.getAuthorSetByIdSet(Collections.emptySet())).thenReturn(new HashSet<>());
-        Mockito.when(categoryService.getCategorySetByIdSet(Collections.emptySet())).thenReturn(new HashSet<>());
+        when(bookRepository.save(Mockito.any(Book.class))).thenReturn(book);
+        when(authorService.getAuthorSetByIdSet(Collections.emptySet())).thenReturn(new HashSet<>());
+        when(categoryService.getCategorySetByIdSet(Collections.emptySet())).thenReturn(new HashSet<>());
 
         // Act
         BookResponse actualResponse = bookService.createBook(request);
 
         // Assert
-        Assertions.assertThat(actualResponse).isEqualTo(expectedResponse);
+        assertThat(actualResponse).isEqualTo(expectedResponse);
         Mockito.verify(bookRepository).save(Mockito.any(Book.class));
     }
 
@@ -333,15 +435,15 @@ public class BookServiceImplTest {
         );
 
 
-        Mockito.when(bookRepository.save(Mockito.any(Book.class))).thenReturn(book);
-        Mockito.when(authorService.getAuthorSetByIdSet(Set.of(authorId1, authorId2))).thenReturn(new HashSet<>(Set.of(author1, author2)));
-        Mockito.when(categoryService.getCategorySetByIdSet(Set.of(categoryId1, categoryId2))).thenReturn(new HashSet<>(Set.of(category1, category2)));
+        when(bookRepository.save(Mockito.any(Book.class))).thenReturn(book);
+        when(authorService.getAuthorSetByIdSet(Set.of(authorId1, authorId2))).thenReturn(new HashSet<>(Set.of(author1, author2)));
+        when(categoryService.getCategorySetByIdSet(Set.of(categoryId1, categoryId2))).thenReturn(new HashSet<>(Set.of(category1, category2)));
 
         // Act
         BookResponse actualResponse = bookService.createBook(request);
 
         // Assert
-        Assertions.assertThat(actualResponse)
+        assertThat(actualResponse)
                 .isEqualTo(expectedResponse);
 
         Mockito.verify(bookRepository).save(Mockito.any(Book.class));
@@ -365,12 +467,13 @@ public class BookServiceImplTest {
                 null
         );
 
-        Mockito.when(authorService.getAuthorSetByIdSet(Set.of(authorId1, authorId2))).thenThrow(NotFoundException.class);
+        when(authorService.getAuthorSetByIdSet(Set.of(authorId1, authorId2))).thenThrow(NotFoundException.class);
 
         // Act & Assert
         Assertions.assertThatThrownBy(() -> bookService.createBook(request))
                 .isInstanceOf(NotFoundException.class);
     }
+
     @Test
     void createBook_shouldThrowNotFoundException_whenACategoryDoesNotExistsWithGivenCategoryIdSet() {
 
@@ -389,12 +492,13 @@ public class BookServiceImplTest {
                 Set.of(categoryId1, categoryId2)
         );
 
-        Mockito.when(authorService.getAuthorSetByIdSet(Collections.emptySet())).thenReturn(Collections.emptySet());
-        Mockito.when(categoryService.getCategorySetByIdSet(Set.of(categoryId1, categoryId2))).thenThrow(NotFoundException.class);
+        when(authorService.getAuthorSetByIdSet(Collections.emptySet())).thenReturn(Collections.emptySet());
+        when(categoryService.getCategorySetByIdSet(Set.of(categoryId1, categoryId2))).thenThrow(NotFoundException.class);
         // Act & Assert
         Assertions.assertThatThrownBy(() -> bookService.createBook(request))
                 .isInstanceOf(NotFoundException.class);
     }
 
 }
+
 
