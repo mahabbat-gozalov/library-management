@@ -1,7 +1,7 @@
 package com.mg_devjoint.library_management.service;
 
 import com.mg_devjoint.library_management.dto.request.create.CreateBookRequest;
-import com.mg_devjoint.library_management.dto.request.update.UpdateBookRequest;
+import com.mg_devjoint.library_management.dto.request.update.*;
 import com.mg_devjoint.library_management.dto.response.BookResponse;
 import com.mg_devjoint.library_management.dto.response.PageResponse;
 import com.mg_devjoint.library_management.model.Book;
@@ -12,11 +12,17 @@ public interface BookService {
 
     BookResponse createBook(CreateBookRequest request);
 
-    BookResponse updateBook(UUID bookId, UpdateBookRequest request);
-
     PageResponse<BookResponse> getAllBooks(int page, int size);
 
     BookResponse getBookById(UUID bookId);
+
+    BookResponse updateBook(UUID bookId, UpdateBookRequest request);
+
+    BookResponse updateBookFullQuantity(UUID bookId, Integer fullQuantity);
+
+    BookResponse addAuthorsToBook(UUID bookId, AddAuthorsToBookRequest request);
+
+    BookResponse addCategoriesToBook(UUID bookId, AddCategoriesToBookRequest request);
 
     void activateBookById(UUID bookId);
 
