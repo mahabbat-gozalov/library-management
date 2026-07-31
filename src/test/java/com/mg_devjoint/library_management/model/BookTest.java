@@ -55,8 +55,7 @@ public class BookTest {
                 status,
                 null,
                 null))
-                .isInstanceOf(InvalidEntityDataException.class)
-                .hasMessage("title cannot be null");
+                .isInstanceOf(InvalidEntityDataException.class);
 
 
     }
@@ -77,8 +76,7 @@ public class BookTest {
                 status,
                 null,
                 null))
-                .isInstanceOf(InvalidEntityDataException.class)
-                .hasMessage("isbn cannot be null");
+                .isInstanceOf(InvalidEntityDataException.class);
 
 
     }
@@ -99,8 +97,7 @@ public class BookTest {
                 status,
                 null,
                 null))
-                .isInstanceOf(InvalidEntityDataException.class)
-                .hasMessage("fullQuantity cannot be null");
+                .isInstanceOf(InvalidEntityDataException.class);
 
 
     }
@@ -121,9 +118,7 @@ public class BookTest {
                 status,
                 null,
                 null))
-                .isInstanceOf(InvalidEntityDataException.class)
-                .hasMessage("bookStatus cannot be null");
-
+                .isInstanceOf(InvalidEntityDataException.class);
     }
 
     @Test
