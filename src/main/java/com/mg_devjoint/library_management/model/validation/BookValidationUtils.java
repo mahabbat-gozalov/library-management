@@ -40,7 +40,7 @@ public final class BookValidationUtils {
     }
 
     public static void validateFullQuantity(Integer fullQuantity) {
-        if (fullQuantity == null || fullQuantity <= 0) {
+        if (fullQuantity == null || fullQuantity < 0) {
             throw new InvalidEntityDataException("Full quantity cannot be null or negative");
         }
     }
