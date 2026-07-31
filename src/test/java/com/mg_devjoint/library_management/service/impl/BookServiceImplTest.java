@@ -1,8 +1,10 @@
 package com.mg_devjoint.library_management.service.impl;
 
+import com.mg_devjoint.library_management.dto.request.create.CreateBookRequest;
+import com.mg_devjoint.library_management.dto.response.BookResponse;
 import com.mg_devjoint.library_management.exception.InvalidOperationException;
 import com.mg_devjoint.library_management.exception.NotFoundException;
-import com.mg_devjoint.library_management.model.Book;
+import com.mg_devjoint.library_management.model.*;
 import com.mg_devjoint.library_management.model.enums.BookStatus;
 import com.mg_devjoint.library_management.repository.BookRepository;
 import com.mg_devjoint.library_management.service.AuthorService;
@@ -13,8 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceImplTest {
@@ -224,4 +225,176 @@ public class BookServiceImplTest {
                 null,
                 null);
     }
+
+    @Test
+    void createBook_shouldCreateBookWithoutAuthorsAndCategories_whenIdSetsAreNullInValidRequest() {
+        // Arrange
+        CreateBookRequest request = new CreateBookRequest(
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                null,
+                null);
+        UUID bookId = UUID.randomUUID();
+
+        Book book = Book.createWithId(
+                bookId,
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                BookStatus.INACTIVE,
+                null,
+                null
+        );
+
+        BookResponse expectedResponse = new BookResponse(
+                bookId,
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                10,
+                Collections.emptySet(),
+                Collections.emptySet()
+        );
+
+        Mockito.when(bookRepository.save(Mockito.any(Book.class))).thenReturn(book);
+        Mockito.when(authorService.getAuthorSetByIdSet(Collections.emptySet())).thenReturn(new HashSet<>());
+        Mockito.when(categoryService.getCategorySetByIdSet(Collections.emptySet())).thenReturn(new HashSet<>());
+
+        // Act
+        BookResponse actualResponse = bookService.createBook(request);
+
+        // Assert
+        Assertions.assertThat(actualResponse).isEqualTo(expectedResponse);
+        Mockito.verify(bookRepository).save(Mockito.any(Book.class));
+    }
+
+
+    @Test
+    void createBook_shouldCreateBookWithAuthorsAndCategories_whenIdSetsProvidedInValidRequest() {
+        // Arrange
+        UUID authorId1 = UUID.randomUUID();
+        UUID authorId2 = UUID.randomUUID();
+
+        UUID categoryId1 = UUID.randomUUID();
+        UUID categoryId2 = UUID.randomUUID();
+
+        CreateBookRequest request = new CreateBookRequest(
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                Set.of(authorId1, authorId2),
+                Set.of(categoryId1, categoryId2)
+        );
+        UUID bookId = UUID.randomUUID();
+
+        Author author1 = Author.createWithId(authorId1, "Mahabbat", "Gozalov", "Programmer", "mgzlovcontact@gmailcom");
+        Author author2 = Author.createWithId(authorId2, "Mutalib", "Gozalov", "Programmer", "mgzlovcontact2@gmail.com");
+
+        Category category1 = Category.createWithId(categoryId1, "Science", "It is all about science");
+        Category category2 = Category.createWithId(categoryId2, "Fiction", "It is all about fiction");
+
+        Book book = Book.createWithId(
+                bookId,
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                BookStatus.INACTIVE,
+                Set.of(author1, author2),
+                Set.of(category1, category2)
+        );
+
+        BookResponse expectedResponse = new BookResponse(
+                bookId,
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                10,
+                Set.of(authorId1, authorId2),
+                Set.of(categoryId1, categoryId2)
+        );
+
+
+        Mockito.when(bookRepository.save(Mockito.any(Book.class))).thenReturn(book);
+        Mockito.when(authorService.getAuthorSetByIdSet(Set.of(authorId1, authorId2))).thenReturn(new HashSet<>(Set.of(author1, author2)));
+        Mockito.when(categoryService.getCategorySetByIdSet(Set.of(categoryId1, categoryId2))).thenReturn(new HashSet<>(Set.of(category1, category2)));
+
+        // Act
+        BookResponse actualResponse = bookService.createBook(request);
+
+        // Assert
+        Assertions.assertThat(actualResponse)
+                .isEqualTo(expectedResponse);
+
+        Mockito.verify(bookRepository).save(Mockito.any(Book.class));
+    }
+
+    @Test
+    void createBook_shouldThrowNotFoundException_whenAnAuthorDoesNotExistsWithGivenAuthorIdSet() {
+
+        // Arrange
+        UUID authorId1 = UUID.randomUUID();
+        UUID authorId2 = UUID.randomUUID();
+
+        CreateBookRequest request = new CreateBookRequest(
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                Set.of(authorId1, authorId2),
+                null
+        );
+
+        Mockito.when(authorService.getAuthorSetByIdSet(Set.of(authorId1, authorId2))).thenThrow(NotFoundException.class);
+
+        // Act & Assert
+        Assertions.assertThatThrownBy(() -> bookService.createBook(request))
+                .isInstanceOf(NotFoundException.class);
+    }
+    @Test
+    void createBook_shouldThrowNotFoundException_whenACategoryDoesNotExistsWithGivenCategoryIdSet() {
+
+        // Arrange
+        UUID categoryId1 = UUID.randomUUID();
+        UUID categoryId2 = UUID.randomUUID();
+
+        CreateBookRequest request = new CreateBookRequest(
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                null,
+                Set.of(categoryId1, categoryId2)
+        );
+
+        Mockito.when(authorService.getAuthorSetByIdSet(Collections.emptySet())).thenReturn(Collections.emptySet());
+        Mockito.when(categoryService.getCategorySetByIdSet(Set.of(categoryId1, categoryId2))).thenThrow(NotFoundException.class);
+        // Act & Assert
+        Assertions.assertThatThrownBy(() -> bookService.createBook(request))
+                .isInstanceOf(NotFoundException.class);
+    }
+
 }
+

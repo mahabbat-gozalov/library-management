@@ -1,10 +1,8 @@
 package com.mg_devjoint.library_management.dto.request.create;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
-
-import java.util.Set;
-import java.util.UUID;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Schema(description = "Payload used to create a new category")
 public record CreateCategoryRequest(

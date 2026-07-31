@@ -1,6 +1,10 @@
 package com.mg_devjoint.library_management.exception;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -9,18 +13,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.nio.file.AccessDeniedException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private GlobalExceptionResponse createExceptionBody(HttpStatus status,
-                                                        String message,
-                                                        String uri
+            String message,
+            String uri
     ) {
 
         return GlobalExceptionResponse.builder()
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<GlobalExceptionResponse> invalidPasswordExceptionHandler(InvalidPasswordException exception,
-                                                                                     HttpServletRequest request) {
+            HttpServletRequest request) {
         GlobalExceptionResponse body = createExceptionBody(
                 HttpStatus.BAD_REQUEST,
                 exception.getMessage(),
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidEntityDataException.class)
     public ResponseEntity<GlobalExceptionResponse> invalidEntityDataExceptionHandler(InvalidEntityDataException exception,
-                                                                                     HttpServletRequest request) {
+            HttpServletRequest request) {
         GlobalExceptionResponse body = createExceptionBody(
                 HttpStatus.BAD_REQUEST,
                 exception.getMessage(),
@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<GlobalExceptionResponse> notFoundExceptionHandler(NotFoundException exception,
-                                                                            HttpServletRequest request) {
+            HttpServletRequest request) {
 
         GlobalExceptionResponse body = createExceptionBody(
                 HttpStatus.NOT_FOUND,
@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidOperationException.class)
     public ResponseEntity<GlobalExceptionResponse> invalidOperationExceptionHandler(InvalidOperationException exception,
-                                                                                    HttpServletRequest request) {
+            HttpServletRequest request) {
         GlobalExceptionResponse body = createExceptionBody(
                 HttpStatus.BAD_REQUEST,
                 exception.getMessage(),
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<GlobalExceptionResponse> duplicateEmailExceptionHandler(DuplicateEmailException exception,
-                                                                                  HttpServletRequest request) {
+            HttpServletRequest request) {
         GlobalExceptionResponse body = createExceptionBody(
                 HttpStatus.CONFLICT,
                 exception.getMessage(),
@@ -92,7 +92,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<GlobalExceptionResponse> invalidTokenExceptionHandler(InvalidTokenException exception,
-                                                                                HttpServletRequest request) {
+            HttpServletRequest request) {
         GlobalExceptionResponse body = createExceptionBody(
                 HttpStatus.UNAUTHORIZED,
                 exception.getMessage(),
@@ -104,7 +104,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<GlobalExceptionResponse> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException exception,
-                                                                                          HttpServletRequest request) {
+            HttpServletRequest request) {
 
         GlobalExceptionResponse body = createExceptionBody(
                 HttpStatus.BAD_REQUEST,
@@ -117,7 +117,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<GlobalExceptionResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException exception,
-                                                                                          HttpServletRequest request
+            HttpServletRequest request
     ) {
 
         Map<String, List<String>> validationErrors = exception.getBindingResult().getFieldErrors().stream()
