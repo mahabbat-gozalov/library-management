@@ -281,13 +281,13 @@ public class BookServiceImplTest {
 
     @Test
     void createBook_shouldCreateBookWithAuthorsAndCategories_whenIdSetsProvidedInValidRequest() {
+        // Arrange
         UUID authorId1 = UUID.randomUUID();
         UUID authorId2 = UUID.randomUUID();
 
         UUID categoryId1 = UUID.randomUUID();
         UUID categoryId2 = UUID.randomUUID();
 
-        // Arrange
         CreateBookRequest request = new CreateBookRequest(
                 "The Pragmatic Programmer",
                 "978-1-56619-909-4",
@@ -347,6 +347,54 @@ public class BookServiceImplTest {
         Mockito.verify(bookRepository).save(Mockito.any(Book.class));
     }
 
+    @Test
+    void createBook_shouldThrowNotFoundException_whenAnAuthorDoesNotExistsWithGivenAuthorIdSet() {
+
+        // Arrange
+        UUID authorId1 = UUID.randomUUID();
+        UUID authorId2 = UUID.randomUUID();
+
+        CreateBookRequest request = new CreateBookRequest(
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                Set.of(authorId1, authorId2),
+                null
+        );
+
+        Mockito.when(authorService.getAuthorSetByIdSet(Set.of(authorId1, authorId2))).thenThrow(NotFoundException.class);
+
+        // Act & Assert
+        Assertions.assertThatThrownBy(() -> bookService.createBook(request))
+                .isInstanceOf(NotFoundException.class);
+    }
+    @Test
+    void createBook_shouldThrowNotFoundException_whenACategoryDoesNotExistsWithGivenCategoryIdSet() {
+
+        // Arrange
+        UUID categoryId1 = UUID.randomUUID();
+        UUID categoryId2 = UUID.randomUUID();
+
+        CreateBookRequest request = new CreateBookRequest(
+                "The Pragmatic Programmer",
+                "978-1-56619-909-4",
+                """
+                        For twenty years, this masterpiece have helped a generation of programmers.
+                        """,
+                10,
+                null,
+                Set.of(categoryId1, categoryId2)
+        );
+
+        Mockito.when(authorService.getAuthorSetByIdSet(Collections.emptySet())).thenReturn(Collections.emptySet());
+        Mockito.when(categoryService.getCategorySetByIdSet(Set.of(categoryId1, categoryId2))).thenThrow(NotFoundException.class);
+        // Act & Assert
+        Assertions.assertThatThrownBy(() -> bookService.createBook(request))
+                .isInstanceOf(NotFoundException.class);
+    }
 
 }
 
