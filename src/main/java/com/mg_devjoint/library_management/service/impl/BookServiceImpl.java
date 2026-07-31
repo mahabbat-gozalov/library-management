@@ -1,11 +1,11 @@
 package com.mg_devjoint.library_management.service.impl;
 
-import com.mg_devjoint.library_management.dto.enums.CollectionUpdateMode;
 import com.mg_devjoint.library_management.dto.request.create.CreateBookRequest;
-import com.mg_devjoint.library_management.dto.request.update.UpdateBookRequest;
+import com.mg_devjoint.library_management.dto.request.update.*;
 import com.mg_devjoint.library_management.dto.response.BookResponse;
 import com.mg_devjoint.library_management.dto.response.PageResponse;
-import com.mg_devjoint.library_management.exception.*;
+import com.mg_devjoint.library_management.exception.InvalidOperationException;
+import com.mg_devjoint.library_management.exception.NotFoundException;
 import com.mg_devjoint.library_management.mapper.BookMapper;
 import com.mg_devjoint.library_management.model.*;
 import com.mg_devjoint.library_management.model.enums.BookStatus;
@@ -80,59 +80,50 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public BookResponse updateBook(UUID bookId, UpdateBookRequest request) {
+        Book bookToUpdate = getBookEntityByIdWithAuthorsAndCategories(bookId);
 
-        CollectionUpdateMode authorSetUpdateMode = request.authorSetUpdateMode() == null ? CollectionUpdateMode.ADD : request.authorSetUpdateMode();
-        CollectionUpdateMode categorySetUpdateMode = request.categorySetUpdateMode() == null ? CollectionUpdateMode.ADD : request.categorySetUpdateMode();
+        bookToUpdate.setTitle(request.title());
+        bookToUpdate.setIsbn(request.isbn());
+        bookToUpdate.setDescription(request.description());
 
-        Book bookById = getBookEntityByIdWithAuthorsAndCategories(bookId);
+        return BookMapper.toBookResponse(bookToUpdate);
+    }
 
-        bookById.setTitle(request.title());
-        bookById.setIsbn(request.isbn());
-        bookById.setDescription(request.description());
+    @Override
+    @Transactional
+    public BookResponse updateBookFullQuantity(UUID bookId, Integer fullQuantity) {
 
-        Integer currentAvailableQuantity = bookById.getAvailableQuantity();
-        Integer currentFullQuantity = bookById.getFullQuantity();
-        Integer onLoan = currentFullQuantity - currentAvailableQuantity;
+        Book book = getBookEntityByIdWithAuthorsAndCategories(bookId);
 
-        Integer newFullQuantity = request.fullQuantity();
+        book.setNewFullQuantity(fullQuantity);
 
-        if (newFullQuantity < onLoan) {
-            throw new InvalidEntityDataException("Full quantity cannot be less than borrowed books.");
-        }
+        return BookMapper.toBookResponse(book);
+    }
 
-        Integer newAvailableQuantity = newFullQuantity - onLoan;
+    @Override
+    @Transactional
+    public BookResponse addAuthorsToBook(UUID bookId, AddAuthorsToBookRequest request) {
+        Set<Author> authorSetByIdSet = authorService.getAuthorSetByIdSet(request.authorIdSet());
 
-        bookById.setAvailableQuantity(newAvailableQuantity);
-        bookById.setFullQuantity(newFullQuantity);
+        Book book = getBookEntityByIdWithAuthorsAndCategories(bookId);
 
-        if (request.authorIdSet() != null) {
+        authorSetByIdSet
+                .forEach(book::addAuthor);
 
-            if (authorSetUpdateMode == CollectionUpdateMode.REPLACE) {
-                HashSet<Author> currentBookAuthorSet = new HashSet<>(bookById.getAuthors());
+        return BookMapper.toBookResponse(book);
+    }
 
-                currentBookAuthorSet
-                        .forEach(bookById::removeAuthor);
-            }
+    @Override
+    @Transactional
+    public BookResponse addCategoriesToBook(UUID bookId, AddCategoriesToBookRequest request) {
+        Set<Category> categorySetByIdSet = categoryService.getCategorySetByIdSet(request.categoryIdSet());
 
-            Set<Author> authorSet = authorService.getAuthorSetByIdSet(request.authorIdSet());
+        Book book = getBookEntityByIdWithAuthorsAndCategories(bookId);
 
-            authorSet.forEach(bookById::addAuthor);
-        }
+        categorySetByIdSet
+                .forEach(book::addCategory);
 
-        if (request.categoryIdSet() != null) {
-            if (categorySetUpdateMode == CollectionUpdateMode.REPLACE) {
-                Set<Category> currentBookCategorySet = new HashSet<>(bookById.getCategories());
-
-                currentBookCategorySet
-                        .forEach(bookById::removeCategory);
-            }
-
-            Set<Category> categorySet = categoryService.getCategorySetByIdSet(request.categoryIdSet());
-
-            categorySet.forEach(bookById::addCategory);
-        }
-
-        return BookMapper.toBookResponse(bookById);
+        return BookMapper.toBookResponse(book);
     }
 
     @Override

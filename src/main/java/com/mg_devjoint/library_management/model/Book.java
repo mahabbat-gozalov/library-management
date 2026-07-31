@@ -61,7 +61,7 @@ public class Book {
         validateTitle(title);
         validateIsbn(isbn);
         validateDescription(description);
-        validateFullQuantity(fullQuantity);
+        validateFullQuantityNullOrNegative(fullQuantity);
         validateBookStatus(status);
         validateInitialAuthorSet(initialAuthorSet);
         validateInitialCategorySet(initialCategorySet);
@@ -192,8 +192,17 @@ public class Book {
         this.description = description;
     }
 
-    public void setFullQuantity(Integer fullQuantity) {
-        validateFullQuantity(fullQuantity);
+    public void setNewFullQuantity(Integer fullQuantity) {
+        validateFullQuantityNullOrNegative(fullQuantity);
+
+        Integer onLoan = this.fullQuantity - this.availableQuantity;
+
+        if (fullQuantity < onLoan) {
+            throw new InvalidEntityDataException("Full quantity cannot be less than borrowed books.");
+        }
+
+        this.availableQuantity = fullQuantity - onLoan;
+
         this.fullQuantity = fullQuantity;
     }
 

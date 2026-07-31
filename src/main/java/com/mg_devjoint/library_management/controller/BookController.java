@@ -1,23 +1,29 @@
 package com.mg_devjoint.library_management.controller;
 
 import com.mg_devjoint.library_management.dto.request.create.CreateBookRequest;
-import com.mg_devjoint.library_management.dto.request.update.UpdateBookRequest;
+import com.mg_devjoint.library_management.dto.request.update.*;
 import com.mg_devjoint.library_management.dto.response.BookResponse;
 import com.mg_devjoint.library_management.dto.response.PageResponse;
 import com.mg_devjoint.library_management.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+
 @Tag(name = "Books", description = "Book management endpoints")
 @RestController
 @RequestMapping("/api/v1/books")
+@Validated
 public class BookController {
 
     private final BookService bookService;
@@ -92,10 +98,6 @@ public class BookController {
                     description = "Book updated successfully"
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid request data or full quantity is less than the number of loaned copies"
-            ),
-            @ApiResponse(
                     responseCode = "404",
                     description = "Book, author, or category not found"
             )
@@ -105,8 +107,96 @@ public class BookController {
                                                    @Valid @RequestBody UpdateBookRequest request) {
 
         BookResponse response = bookService.updateBook(bookId, request);
+
         return ResponseEntity.ok(response);
     }
+
+    @Operation(
+            summary = "Update book full quantity",
+            description = "Updates the total inventory quantity of a specific book by its ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Book full quantity updated successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Full quantity cannot be less than current on-loan copies"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Book not found"
+            )
+    })
+    @PatchMapping("/{bookId}/setFullQuantity")
+    public ResponseEntity<BookResponse> updateBookFullQuantity(
+            @PathVariable(name = "bookId") UUID bookId,
+
+            @RequestParam(name = "fullQuantity")
+            @NotNull(message = "full quantity cannot be null")
+            @PositiveOrZero(message = "full quantity cannot be negative")
+            Integer fullQuantity
+    ) {
+        BookResponse response = bookService.updateBookFullQuantity(bookId, fullQuantity);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Add authors to a book",
+            description = "Adds new authors to a specific book by their IDs."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Authors added successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request payload or empty author ID set"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Book or Author not found"
+            )
+
+    })
+    @PatchMapping("/{bookId}/addAuthors")
+    public ResponseEntity<BookResponse> addAuthorsToBook(@PathVariable(name = "bookId") UUID bookId,
+                                                         @Valid @RequestBody AddAuthorsToBookRequest request) {
+        BookResponse response = bookService.addAuthorsToBook(bookId, request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Add categories to a book",
+            description = "Adds new categories to a specific book by their IDs."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Categories added successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request payload or empty category ID set"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Book or Category not found"
+            )
+
+    })
+    @PatchMapping("/{bookId}/addCategories")
+    public ResponseEntity<BookResponse> addCategoriesToBook(@PathVariable(name = "bookId") UUID bookId,
+                                                            @Valid @RequestBody AddCategoriesToBookRequest request) {
+        BookResponse response = bookService.addCategoriesToBook(bookId, request);
+
+        return ResponseEntity.ok(response);
+    }
+
 
     @Operation(
             summary = "Activate a book",
