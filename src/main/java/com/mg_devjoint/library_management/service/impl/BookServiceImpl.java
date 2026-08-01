@@ -1,32 +1,20 @@
 package com.mg_devjoint.library_management.service.impl;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.UUID;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import com.mg_devjoint.library_management.dto.request.create.CreateBookRequest;
+import com.mg_devjoint.library_management.dto.request.update.*;
+import com.mg_devjoint.library_management.dto.response.BookResponse;
+import com.mg_devjoint.library_management.dto.response.PageResponse;
+import com.mg_devjoint.library_management.exception.*;
+import com.mg_devjoint.library_management.mapper.BookMapper;
+import com.mg_devjoint.library_management.model.*;
+import com.mg_devjoint.library_management.model.enums.BookStatus;
+import com.mg_devjoint.library_management.repository.BookRepository;
+import com.mg_devjoint.library_management.service.*;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mg_devjoint.library_management.dto.request.create.CreateBookRequest;
-import com.mg_devjoint.library_management.dto.request.update.AddAuthorsToBookRequest;
-import com.mg_devjoint.library_management.dto.request.update.AddCategoriesToBookRequest;
-import com.mg_devjoint.library_management.dto.request.update.UpdateBookRequest;
-import com.mg_devjoint.library_management.dto.response.BookResponse;
-import com.mg_devjoint.library_management.dto.response.PageResponse;
-import com.mg_devjoint.library_management.exception.InvalidOperationException;
-import com.mg_devjoint.library_management.exception.NotFoundException;
-import com.mg_devjoint.library_management.mapper.BookMapper;
-import com.mg_devjoint.library_management.model.Author;
-import com.mg_devjoint.library_management.model.Book;
-import com.mg_devjoint.library_management.model.Category;
-import com.mg_devjoint.library_management.model.enums.BookStatus;
-import com.mg_devjoint.library_management.repository.BookRepository;
-import com.mg_devjoint.library_management.service.AuthorService;
-import com.mg_devjoint.library_management.service.BookService;
-import com.mg_devjoint.library_management.service.CategoryService;
+import java.util.*;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -106,7 +94,15 @@ public class BookServiceImpl implements BookService {
 
         Book book = getBookEntityByIdWithAuthorsAndCategories(bookId);
 
-        book.setNewFullQuantity(fullQuantity);
+        Integer onLoan = book.getFullQuantity() - book.getAvailableQuantity();
+
+        if (fullQuantity < onLoan) {
+            throw new InvalidOperationException("Full quantity cannot be less than borrowed books.");
+        }
+
+        book.setFullQuantity(fullQuantity);
+
+        book.setAvailableQuantity(fullQuantity - onLoan);
 
         return BookMapper.toBookResponse(book);
     }
