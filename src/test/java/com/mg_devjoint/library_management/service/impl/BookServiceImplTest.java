@@ -1,6 +1,7 @@
 package com.mg_devjoint.library_management.service.impl;
 
 import com.mg_devjoint.library_management.dto.request.create.CreateBookRequest;
+import com.mg_devjoint.library_management.dto.request.update.UpdateBookRequest;
 import com.mg_devjoint.library_management.dto.response.BookResponse;
 import com.mg_devjoint.library_management.exception.InvalidOperationException;
 import com.mg_devjoint.library_management.exception.NotFoundException;
@@ -36,14 +37,36 @@ public class BookServiceImplTest {
     @InjectMocks
     private BookServiceImpl bookService;
 
+    private Book getBook(BookStatus status) {
+        return Book.create("title",
+                "isbn",
+                "description",
+                10,
+                status,
+                null,
+                null);
+    }
+
+    private Book getBookWithId(UUID bookId) {
+        return Book.createWithId(
+                bookId,
+                "title",
+                "isbn",
+                "description",
+                10,
+                BookStatus.ACTIVE,
+                null,
+                null);
+    }
+
     @Test
     void getBookEntityById_shouldReturnBook_whenBookExists() {
         // Arrange
         UUID bookId = UUID.randomUUID();
 
-        Book book = Book.create("The Lord of The Rings: The Two Tower",
-                "9788845292255",
-                "Most beautiful book of the world",
+        Book book = Book.create("title",
+                "isbn",
+                "description",
                 10,
                 BookStatus.ACTIVE,
                 null,
@@ -82,7 +105,7 @@ public class BookServiceImplTest {
     @Test
     void activateBookById_shouldActivateBook_whenBookIsInactive() {
         // Arrange
-        Book inactiveBook = getInactiveBook();
+        Book inactiveBook = getBook(BookStatus.INACTIVE);
 
         when(bookRepository.findById(inactiveBook.getId())).thenReturn(Optional.of(inactiveBook));
 
@@ -112,7 +135,7 @@ public class BookServiceImplTest {
     @Test
     void activateBookById_shouldThrowInvalidOperationException_whenBookIsNotInactive() {
         // Arrange
-        Book activeBook = getActiveBook();
+        Book activeBook = getBook(BookStatus.ACTIVE);
 
         when(bookRepository.findById(activeBook.getId())).thenReturn(Optional.of(activeBook));
 
@@ -127,7 +150,7 @@ public class BookServiceImplTest {
     @Test
     void deactivateBookById_shouldDeactivateBook_whenBookIsActive() {
         // Arrange
-        Book activeBook = getActiveBook();
+        Book activeBook = getBook(BookStatus.ACTIVE);
         when(bookRepository.findById(activeBook.getId())).thenReturn(Optional.of(activeBook));
 
         // Act
@@ -156,7 +179,7 @@ public class BookServiceImplTest {
     @Test
     void deactivateBookById_shouldThrowInvalidOperationException_whenBookIsNotActive() {
         // Arrange
-        Book inactiveBook = getInactiveBook();
+        Book inactiveBook = getBook(BookStatus.INACTIVE);
         when(bookRepository.findById(inactiveBook.getId())).thenReturn(Optional.of(inactiveBook));
 
         // Act & Assert
@@ -169,7 +192,7 @@ public class BookServiceImplTest {
     @Test
     void suspendBookById_shouldSuspendBook_whenBookIsInactive() {
         // Arrange
-        Book inactiveBook = getInactiveBook();
+        Book inactiveBook = getBook(BookStatus.INACTIVE);
         when(bookRepository.findById(inactiveBook.getId())).thenReturn(Optional.of(inactiveBook));
 
         // Act
@@ -198,7 +221,7 @@ public class BookServiceImplTest {
     @Test
     void suspendBookById_shouldThrowInvalidOperationException_whenBookIsNotInactive() {
         // Arrange
-        Book activeBook = getActiveBook();
+        Book activeBook = getBook(BookStatus.ACTIVE);
 
         when(bookRepository.findById(activeBook.getId())).thenReturn(Optional.of(activeBook));
 
@@ -211,19 +234,11 @@ public class BookServiceImplTest {
     }
 
     @Test
-    void deleteBookById_whenBookIsSuspendedAndOnLoanIsZero() {
+    void deleteBookById_shouldDeleteBook_whenBookIsSuspendedAndOnLoanIsZero() {
         // Arrange
         UUID bookId = UUID.randomUUID();
 
-        Book book = Book.createWithId(
-                bookId, "Book",
-                "123456789",
-                "this is a book",
-                10,
-                BookStatus.SUSPENDED,
-                null,
-                null
-        );
+        Book book = getBook(BookStatus.SUSPENDED);
 
         BookStatus expectedStatus = BookStatus.DELETED;
 
@@ -259,15 +274,7 @@ public class BookServiceImplTest {
         // Arrange
         UUID bookId = UUID.randomUUID();
 
-        Book book = Book.createWithId(
-                bookId, "Book",
-                "123456789",
-                "this is a book",
-                10,
-                BookStatus.SUSPENDED,
-                null,
-                null
-        );
+        Book book = getBook(BookStatus.SUSPENDED);
 
         book.setAvailableQuantity(5);
 
@@ -287,18 +294,9 @@ public class BookServiceImplTest {
         // Arrange
         UUID bookId = UUID.randomUUID();
 
-        Book book = Book.createWithId(
-                bookId, "Book",
-                "123456789",
-                "this is a book",
-                10,
-                BookStatus.ACTIVE,
-                null,
-                null
-        );
+        Book book = getBook(BookStatus.ACTIVE);
 
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
-
 
         // Act & Assert
         assertThatThrownBy(() -> bookService.deleteBookById(bookId))
@@ -306,26 +304,6 @@ public class BookServiceImplTest {
                 .hasMessage("Only suspended books can be deleted. Current status: " + book.getStatus());
 
         Mockito.verify(bookRepository).findById(bookId);
-    }
-
-    private Book getInactiveBook() {
-        return Book.create("The Lord of The Rings: The Two Tower",
-                "9788845292255",
-                "Most beautiful book of the world",
-                10,
-                BookStatus.INACTIVE,
-                null,
-                null);
-    }
-
-    private Book getActiveBook() {
-        return Book.create("The Lord of The Rings: The Two Tower",
-                "9788845292255",
-                "Most beautiful book of the world",
-                10,
-                BookStatus.ACTIVE,
-                null,
-                null);
     }
 
     @Test
@@ -498,6 +476,55 @@ public class BookServiceImplTest {
         Assertions.assertThatThrownBy(() -> bookService.createBook(request))
                 .isInstanceOf(NotFoundException.class);
     }
+
+
+    @Test
+    void updateBook_shouldReturnBookResponse_whenRequestIsValid() {
+        // Arrange
+        UUID bookId = UUID.randomUUID();
+
+        UpdateBookRequest request = new UpdateBookRequest("title", "isbn", "description");
+
+        Book book = getBookWithId(bookId);
+
+        when(bookRepository.findBookByIdWithAuthorsAndCategories(bookId)).thenReturn(Optional.of(book));
+
+        BookResponse expectedResponse = new BookResponse(bookId,
+                "title",
+                "isbn",
+                "description",
+                10,
+                10,
+                Collections.emptySet(),
+                Collections.emptySet()
+        );
+
+        // Act
+        BookResponse actualResponse = bookService.updateBook(bookId, request);
+
+        // Assert
+        assertThat(actualResponse).isEqualTo(expectedResponse);
+
+        Mockito.verify(bookRepository).findBookByIdWithAuthorsAndCategories(bookId);
+    }
+
+    @Test
+    void updateBook_shouldThrowNotFoundException_whenBookDoesNotExistsWithGivenId() {
+        // Arrange
+        UUID bookId = UUID.randomUUID();
+
+        UpdateBookRequest request = new UpdateBookRequest("title", "isbn", "description");
+
+        when(bookRepository.findBookByIdWithAuthorsAndCategories(bookId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+            assertThatThrownBy(() -> bookService.updateBook(bookId, request))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("Book not found with id " + bookId);
+
+        Mockito.verify(bookRepository).findBookByIdWithAuthorsAndCategories(bookId);
+    }
+
 
 }
 
