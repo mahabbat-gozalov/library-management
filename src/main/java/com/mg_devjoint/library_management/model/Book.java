@@ -126,17 +126,6 @@ public class Book {
         author.removeBook(this);
     }
 
-    public void decreaseAvailableQuantity() {
-        if (this.availableQuantity < 1) throw new InvalidEntityDataException("Not enough quantity");
-        this.availableQuantity--;
-    }
-
-    public void increaseAvailableQuantity() {
-        if (Objects.equals(this.availableQuantity, this.fullQuantity))
-            throw new InvalidEntityDataException("Available quantity exceeds full quantity");
-        this.availableQuantity++;
-    }
-
     public UUID getId() {
         return id;
     }

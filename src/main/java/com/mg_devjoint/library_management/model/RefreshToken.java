@@ -1,6 +1,5 @@
 package com.mg_devjoint.library_management.model;
 
-import com.mg_devjoint.library_management.exception.InvalidEntityDataException;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -68,11 +67,8 @@ public class RefreshToken {
         return this.revoked;
     }
 
-    public void revoke() {
-        if (this.revoked) {
-            throw new InvalidEntityDataException("Refresh token is already revoked");
-        }
-        this.revoked = true;
+    public void setRevoked(boolean revoked) {
+        this.revoked = revoked;
     }
 
     public LocalDateTime getExpiresAt() {

@@ -130,11 +130,6 @@ public class Member {
         this.status = status;
     }
 
-    public void setMembershipDate(LocalDate membershipDate) {
-        validateMembershipDate(membershipDate);
-        this.membershipDate = membershipDate;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

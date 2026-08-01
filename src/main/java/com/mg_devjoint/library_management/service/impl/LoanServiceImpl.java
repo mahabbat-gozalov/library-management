@@ -52,7 +52,7 @@ public class LoanServiceImpl implements LoanService {
 
         Loan savedLoan = loanRepository.save(loan);
 
-        book.decreaseAvailableQuantity();
+        book.setAvailableQuantity(book.getAvailableQuantity() - 1);
 
         return LoanMapper.toLoanResponse(savedLoan);
     }
@@ -90,7 +90,7 @@ public class LoanServiceImpl implements LoanService {
 
         Book book = loan.getBook();
 
-        book.increaseAvailableQuantity();
+        book.setAvailableQuantity(book.getAvailableQuantity() + 1);
 
         return LoanMapper.toLoanResponse(loan);
     }
