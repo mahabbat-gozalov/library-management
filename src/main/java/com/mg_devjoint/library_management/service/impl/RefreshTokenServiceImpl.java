@@ -1,7 +1,6 @@
 package com.mg_devjoint.library_management.service.impl;
 
-import com.mg_devjoint.library_management.exception.InvalidTokenException;
-import com.mg_devjoint.library_management.exception.NotFoundException;
+import com.mg_devjoint.library_management.exception.*;
 import com.mg_devjoint.library_management.model.RefreshToken;
 import com.mg_devjoint.library_management.model.User;
 import com.mg_devjoint.library_management.repository.RefreshTokenRepository;
@@ -50,7 +49,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public void revokeRefreshToken(RefreshToken refreshToken) {
-        refreshToken.revoke();
+        if(refreshToken.isRevoked()){
+            throw new InvalidOperationException("Refresh token is already revoked");
+        }
+
+        refreshToken.setRevoked(true);
 
         refreshTokenRepository.save(refreshToken);
     }
