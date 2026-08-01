@@ -184,6 +184,11 @@ public class Book {
     public void setFullQuantity(Integer fullQuantity) {
         validateFullQuantityNullOrNegative(fullQuantity);
 
+        if (fullQuantity < this.availableQuantity) {
+            throw new InvalidEntityDataException("Full quantity cannot be less than available quantity");
+
+        }
+
         this.fullQuantity = fullQuantity;
     }
 
