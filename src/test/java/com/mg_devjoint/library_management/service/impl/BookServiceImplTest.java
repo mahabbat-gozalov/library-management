@@ -20,6 +20,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -518,14 +519,70 @@ public class BookServiceImplTest {
         when(bookRepository.findBookByIdWithAuthorsAndCategories(bookId)).thenReturn(Optional.empty());
 
         // Act & Assert
-            assertThatThrownBy(() -> bookService.updateBook(bookId, request))
+        assertThatThrownBy(() -> bookService.updateBook(bookId, request))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("Book not found with id " + bookId);
 
         Mockito.verify(bookRepository).findBookByIdWithAuthorsAndCategories(bookId);
     }
 
+    @Test
+    void updateBookFullQuantity_shouldRetuenBookResponse_whenRequestIsValid() {
 
+        UUID bookId = UUID.randomUUID();
+
+        Integer newFullQuantity = 20;
+
+        Book book = getBookWithId(bookId);
+
+        when(bookRepository.findBookByIdWithAuthorsAndCategories(bookId)).thenReturn(Optional.of(book));
+
+        BookResponse actual = bookService.updateBookFullQuantity(bookId, newFullQuantity);
+
+        BookResponse expected = new BookResponse(
+                bookId,
+                book.getTitle(),
+                book.getIsbn(),
+                book.getDescription(),
+                book.getFullQuantity(),
+                book.getAvailableQuantity(),
+                Collections.emptySet(),
+                Collections.emptySet()
+        );
+
+        verify(bookRepository).findBookByIdWithAuthorsAndCategories(bookId);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void updateBookFullQuantity_shouldThrowNotFoundException_whenBookDoesNotExistsWithGivenId() {
+        UUID bookId = UUID.randomUUID();
+
+        when(bookRepository.findBookByIdWithAuthorsAndCategories(bookId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> bookService.updateBookFullQuantity(bookId, 20))
+                .isInstanceOf(NotFoundException.class);
+
+        Mockito.verify(bookRepository).findBookByIdWithAuthorsAndCategories(bookId);
+    }
+
+
+    @Test
+    void updateBookFullQuantity_shouldThrowInvalidOperationException_whenNewFullQuantityIsLessThanOnLoans() {
+        UUID bookId = UUID.randomUUID();
+        Integer newFullQuantity = 4;
+        Book book = getBookWithId(bookId);
+
+        book.setAvailableQuantity(5);
+
+        when(bookRepository.findBookByIdWithAuthorsAndCategories(bookId)).thenReturn(Optional.of(book));
+
+        assertThatThrownBy(() -> bookService.updateBookFullQuantity(bookId, newFullQuantity))
+                .isInstanceOf(InvalidOperationException.class);
+
+        Mockito.verify(bookRepository).findBookByIdWithAuthorsAndCategories(bookId);
+    }
 }
 
 
