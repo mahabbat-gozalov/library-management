@@ -12,7 +12,7 @@ public interface BookService {
 
     BookResponse createBook(CreateBookRequest request);
 
-    PageResponse<BookResponse> getAllBooks(int page, int size);
+    PageResponse<BookResponse> getAllBooksWithAuthorsAndCategories(int page, int size);
 
     BookResponse getBookById(UUID bookId);
 
