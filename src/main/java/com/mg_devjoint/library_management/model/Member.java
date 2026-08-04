@@ -8,7 +8,6 @@ import java.util.*;
 
 import static com.mg_devjoint.library_management.model.validation.CommonValidationUtils.*;
 import static com.mg_devjoint.library_management.model.validation.MemberValidationUtils.validateMemberStatus;
-import static com.mg_devjoint.library_management.model.validation.MemberValidationUtils.validateMembershipDate;
 
 @Entity
 @Table(name = "MEMBERS")
