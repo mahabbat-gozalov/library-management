@@ -1,6 +1,7 @@
 package com.mg_devjoint.library_management.mapper;
 
 import com.mg_devjoint.library_management.dto.response.BookResponse;
+import com.mg_devjoint.library_management.dto.response.BookSummaryResponse;
 import com.mg_devjoint.library_management.model.*;
 
 import java.util.Set;
@@ -37,4 +38,16 @@ public final class BookMapper {
 
 
     }
+
+    public static BookSummaryResponse toBookSummaryResponse(Book book) {
+        return new BookSummaryResponse(
+                book.getId(),
+                book.getTitle(),
+                book.getIsbn(),
+                book.getDescription(),
+                book.getFullQuantity(),
+                book.getAvailableQuantity()
+        );
+    }
+
 }

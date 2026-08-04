@@ -9,7 +9,7 @@ import org.springframework.lang.NonNull;
 
 import java.util.*;
 
-public interface BookRepository extends JpaRepository<Book, UUID> {
+public interface BookRepository extends JpaRepository<Book, UUID>, JpaSpecificationExecutor<Book> {
 
     @EntityGraph(attributePaths = {"authors", "categories"})
     @Query(value = "select b from Book  b where b.id = :bookId")
