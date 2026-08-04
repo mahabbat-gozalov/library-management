@@ -82,18 +82,19 @@ public class BookServiceImpl implements BookService {
 
         Pageable pageable = getPageable(page, size);
 
-        Specification<Book> specification = Specification.where(hasTitle(criteria.title()))
+        Specification<Book> specification = Specification
+                .where(hasTitle(criteria.title()))
                 .and(hasStatus(criteria.status()))
                 .and(hasCategory(criteria.categoryIdSet()))
                 .and(hasAuthor(criteria.authorIdSet()))
                 .and(hasFullQuantityBetween(criteria.minFullQuantity(), criteria.maxFullQuantity()))
                 .and(hasAvailableQuantityBetween(criteria.minAvailableQuantity(), criteria.maxAvailableQuantity()));
 
-        Page<Book> all = bookRepository.findAll(specification, pageable);
+        Page<Book> bookPage = bookRepository.findAll(specification, pageable);
 
-        Page<BookSummaryResponse> map = all.map(BookMapper::toBookSummaryResponse);
+        Page<BookSummaryResponse> bookSummaryResponsePage = bookPage.map(BookMapper::toBookSummaryResponse);
 
-        return PageResponse.of(map);
+        return PageResponse.of(bookSummaryResponsePage);
     }
 
     @Override

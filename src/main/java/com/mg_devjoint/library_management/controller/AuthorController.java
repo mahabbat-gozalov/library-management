@@ -1,5 +1,6 @@
 package com.mg_devjoint.library_management.controller;
 
+import com.mg_devjoint.library_management.dto.criteria.AuthorSearchCriteria;
 import com.mg_devjoint.library_management.dto.request.create.CreateAuthorRequest;
 import com.mg_devjoint.library_management.dto.request.update.UpdateAuthorRequest;
 import com.mg_devjoint.library_management.dto.response.AuthorResponse;
@@ -55,6 +56,17 @@ public class AuthorController {
         var body = authorService.getAllAuthors(page, size);
         return ResponseEntity.ok(body);
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<PageResponse<AuthorResponse>> filterAuthors(@ModelAttribute AuthorSearchCriteria criteria,
+                                                                      @RequestParam(defaultValue = "1") int page,
+                                                                      @RequestParam(defaultValue = "10") int size
+    ) {
+        PageResponse<AuthorResponse> response = authorService.filter(criteria, page, size);
+
+        return ResponseEntity.ok(response);
+    }
+
 
     @Operation(
             summary = "Get an author by ID",

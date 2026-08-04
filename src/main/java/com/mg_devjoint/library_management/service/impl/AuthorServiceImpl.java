@@ -1,5 +1,6 @@
 package com.mg_devjoint.library_management.service.impl;
 
+import com.mg_devjoint.library_management.dto.criteria.AuthorSearchCriteria;
 import com.mg_devjoint.library_management.dto.request.create.CreateAuthorRequest;
 import com.mg_devjoint.library_management.dto.request.update.UpdateAuthorRequest;
 import com.mg_devjoint.library_management.dto.response.AuthorResponse;
@@ -11,11 +12,14 @@ import com.mg_devjoint.library_management.model.Book;
 import com.mg_devjoint.library_management.repository.AuthorRepository;
 import com.mg_devjoint.library_management.service.AuthorService;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.mg_devjoint.library_management.specification.AuthorSpecification.*;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -44,6 +48,25 @@ public class AuthorServiceImpl implements AuthorService {
         Page<AuthorResponse> allAuthorResponses = allAuthors.map(AuthorMapper::toAuthorResponse);
 
         return PageResponse.of(allAuthorResponses);
+    }
+
+    @Override
+    public PageResponse<AuthorResponse> filter(AuthorSearchCriteria criteria, int page, int size) {
+        Pageable pageable = getPageable(page, size);
+
+        Specification<Author> specification = Specification.where(hasFirstName(criteria.firstName()))
+                .and(hasLastName(criteria.lastName()))
+                .and(hasEmail(criteria.email()))
+                .and(hasSummary(criteria.summary()))
+                .and(hasBook(criteria.bookIdSet()));
+
+
+        Page<Author> authorPage = authorRepository.findAll(specification, pageable);
+
+        Page<AuthorResponse> authorResponsePage = authorPage.map(AuthorMapper::toAuthorResponse);
+
+
+        return PageResponse.of(authorResponsePage);
     }
 
     @Override
