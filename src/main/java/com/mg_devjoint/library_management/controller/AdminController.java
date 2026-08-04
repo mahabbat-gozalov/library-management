@@ -1,8 +1,9 @@
 package com.mg_devjoint.library_management.controller;
 
 import com.mg_devjoint.library_management.dto.request.create.CreateUserRequest;
-import com.mg_devjoint.library_management.dto.response.CreateUserResponse;
+import com.mg_devjoint.library_management.dto.response.*;
 import com.mg_devjoint.library_management.service.AuthService;
+import com.mg_devjoint.library_management.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final AuthService authService;
+    private final UserService userService;
 
-    public AdminController(AuthService authService) {
+    public AdminController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
 
@@ -37,6 +40,14 @@ public class AdminController {
         CreateUserResponse response = authService.createUser(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<UserResponse>> getAllUsers(@RequestParam(defaultValue = "1") int page,
+                                                                  @RequestParam(defaultValue = "10") int size) {
+        PageResponse<UserResponse> responsePage = userService.getAllUsers(page, size);
+
+        return ResponseEntity.ok(responsePage);
     }
 
 }

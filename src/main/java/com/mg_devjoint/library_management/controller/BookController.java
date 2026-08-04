@@ -1,12 +1,11 @@
 package com.mg_devjoint.library_management.controller;
 
+import com.mg_devjoint.library_management.dto.criteria.BookSearchCriteria;
 import com.mg_devjoint.library_management.dto.request.create.CreateBookRequest;
 import com.mg_devjoint.library_management.dto.request.update.*;
-import com.mg_devjoint.library_management.dto.response.BookResponse;
-import com.mg_devjoint.library_management.dto.response.PageResponse;
+import com.mg_devjoint.library_management.dto.response.*;
 import com.mg_devjoint.library_management.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,19 +48,30 @@ public class BookController {
 
     @Operation(
             summary = "Get all books",
-            description = "Retrieves a paginated list of books. Page numbering starts at 1."
+            description = "Retrieves a paginated list of books with its authors and categories. Page numbering starts at 1."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "All books retrieved successfully")
     })
     @GetMapping
-    public ResponseEntity<PageResponse<BookResponse>> getAllBooks(@RequestParam(defaultValue = "1") int page,
-                                                                  @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<PageResponse<BookResponse>> getAllBooksWithAuthorsAndCategories(@RequestParam(defaultValue = "1") int page,
+                                                                                          @RequestParam(defaultValue = "10") int size
     ) {
-        var body = bookService.getAllBooks(page, size);
+        var body = bookService.getAllBooksWithAuthorsAndCategories(page, size);
 
         return ResponseEntity.ok(body);
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<PageResponse<BookSummaryResponse>> filterBooks(@Valid @ModelAttribute BookSearchCriteria criteria,
+                                                                         @RequestParam(defaultValue = "1") int page,
+                                                                         @RequestParam(defaultValue = "10") int size
+    ) {
+        PageResponse<BookSummaryResponse> summaryResponse = bookService.filter(criteria, page, size);
+
+        return ResponseEntity.ok(summaryResponse);
+    }
+
 
     @Operation(
             summary = "Get a book by ID",

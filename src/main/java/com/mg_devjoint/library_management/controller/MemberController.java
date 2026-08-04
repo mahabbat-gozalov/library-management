@@ -1,5 +1,6 @@
 package com.mg_devjoint.library_management.controller;
 
+import com.mg_devjoint.library_management.dto.criteria.MemberSearchCriteria;
 import com.mg_devjoint.library_management.dto.request.create.CreateMemberRequest;
 import com.mg_devjoint.library_management.dto.request.update.UpdateMemberRequest;
 import com.mg_devjoint.library_management.dto.response.MemberResponse;
@@ -55,6 +56,14 @@ public class MemberController {
         var body = memberService.getAllMembers(page, size);
 
         return ResponseEntity.ok(body);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<PageResponse<MemberResponse>> filterMembers( @ModelAttribute MemberSearchCriteria criteria,
+                                                                      @RequestParam(defaultValue = "1") int page,
+                                                                      @RequestParam(defaultValue = "10") int size) {
+        PageResponse<MemberResponse> response = memberService.filter(criteria, page, size);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Get a member by ID")

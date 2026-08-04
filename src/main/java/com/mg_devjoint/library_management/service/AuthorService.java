@@ -1,10 +1,12 @@
 package com.mg_devjoint.library_management.service;
 
+import com.mg_devjoint.library_management.dto.criteria.AuthorSearchCriteria;
 import com.mg_devjoint.library_management.dto.request.create.CreateAuthorRequest;
 import com.mg_devjoint.library_management.dto.request.update.UpdateAuthorRequest;
 import com.mg_devjoint.library_management.dto.response.AuthorResponse;
 import com.mg_devjoint.library_management.dto.response.PageResponse;
 import com.mg_devjoint.library_management.model.Author;
+import jakarta.validation.Valid;
 
 import java.util.Set;
 import java.util.UUID;
@@ -24,4 +26,6 @@ public interface AuthorService {
     Set<Author> getAuthorSetByIdSet(Set<UUID> authorIdSet);
 
     PageResponse<AuthorResponse> getAllAuthors(int page, int size);
+
+    PageResponse<AuthorResponse> filter(AuthorSearchCriteria criteria, int page, int size);
 }

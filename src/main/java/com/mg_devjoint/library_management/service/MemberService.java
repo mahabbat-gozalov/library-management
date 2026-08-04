@@ -1,5 +1,6 @@
 package com.mg_devjoint.library_management.service;
 
+import com.mg_devjoint.library_management.dto.criteria.MemberSearchCriteria;
 import com.mg_devjoint.library_management.dto.request.create.CreateMemberRequest;
 import com.mg_devjoint.library_management.dto.request.update.UpdateMemberRequest;
 import com.mg_devjoint.library_management.dto.response.MemberResponse;
@@ -26,4 +27,5 @@ public interface MemberService {
 
     Member getMemberEntityById(UUID memberId);
 
+    PageResponse<MemberResponse> filter(MemberSearchCriteria criteria, int page, int size);
 }

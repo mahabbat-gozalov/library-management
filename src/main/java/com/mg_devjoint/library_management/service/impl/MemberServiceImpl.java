@@ -1,5 +1,6 @@
 package com.mg_devjoint.library_management.service.impl;
 
+import com.mg_devjoint.library_management.dto.criteria.MemberSearchCriteria;
 import com.mg_devjoint.library_management.dto.request.create.CreateMemberRequest;
 import com.mg_devjoint.library_management.dto.request.update.UpdateMemberRequest;
 import com.mg_devjoint.library_management.dto.response.MemberResponse;
@@ -12,7 +13,9 @@ import com.mg_devjoint.library_management.model.enums.MemberStatus;
 import com.mg_devjoint.library_management.repository.LoanRepository;
 import com.mg_devjoint.library_management.repository.MemberRepository;
 import com.mg_devjoint.library_management.service.MemberService;
+import com.mg_devjoint.library_management.specification.MemberSpecification;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -48,6 +51,26 @@ public class MemberServiceImpl implements MemberService {
 
         return PageResponse.of(allMemberResponses);
     }
+
+    public PageResponse<MemberResponse> filter(MemberSearchCriteria criteria, int page, int size) {
+
+        Pageable pageable = getPageable(page, size);
+
+        Specification<Member> specification = Specification
+                .where(MemberSpecification.hasFirstName(criteria.firstName()))
+                .and(MemberSpecification.hasLastName(criteria.lastName()))
+                .and(MemberSpecification.hasEmail(criteria.email()))
+                .and(MemberSpecification.hasPhone(criteria.phone()))
+                .and(MemberSpecification.hasStatus(criteria.status()))
+                .and(MemberSpecification.hasMembershipDateBetween(criteria.membershipDateSince(), criteria.membershipDateUntil()));
+
+        Page<Member> memberPage = memberRepository.findAll(specification, pageable);
+
+        Page<MemberResponse> memberResponsePage = memberPage.map(MemberMapper::toMemberResponse);
+
+        return PageResponse.of(memberResponsePage);
+    }
+
 
     @Override
     public MemberResponse getMemberById(UUID memberId) {

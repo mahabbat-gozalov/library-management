@@ -1,20 +1,23 @@
 package com.mg_devjoint.library_management.service.impl;
 
+import com.mg_devjoint.library_management.dto.criteria.BookSearchCriteria;
 import com.mg_devjoint.library_management.dto.request.create.CreateBookRequest;
 import com.mg_devjoint.library_management.dto.request.update.*;
-import com.mg_devjoint.library_management.dto.response.BookResponse;
-import com.mg_devjoint.library_management.dto.response.PageResponse;
-import com.mg_devjoint.library_management.exception.*;
+import com.mg_devjoint.library_management.dto.response.*;
+import com.mg_devjoint.library_management.exception.InvalidOperationException;
+import com.mg_devjoint.library_management.exception.NotFoundException;
 import com.mg_devjoint.library_management.mapper.BookMapper;
 import com.mg_devjoint.library_management.model.*;
 import com.mg_devjoint.library_management.model.enums.BookStatus;
 import com.mg_devjoint.library_management.repository.BookRepository;
 import com.mg_devjoint.library_management.service.*;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import static com.mg_devjoint.library_management.specification.BookSpecification.*;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -57,16 +60,41 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<BookResponse> getAllBooks(int page, int size) {
+    public PageResponse<BookResponse> getAllBooksWithAuthorsAndCategories(int page, int size) {
 
         Pageable pageable = getPageable(page, size);
 
-        Page<Book> allBooks = bookRepository.findAll(pageable);
+        Page<UUID> allBookIdPage = bookRepository.findAllBookIds(pageable);
 
-        Page<BookResponse> allBookResponses = allBooks.map(BookMapper::toBookResponse);
+        List<Book> allBookList = bookRepository
+                .findAllBooksWithAuthorsAndCategoriesAsPage(allBookIdPage.getContent());
 
-        return PageResponse.of(allBookResponses);
+        List<BookResponse> allBookResponseList = allBookList.stream()
+                .map(BookMapper::toBookResponse)
+                .toList();
 
+
+        return PageResponse.of(allBookIdPage, allBookResponseList);
+    }
+
+    @Override
+    public PageResponse<BookSummaryResponse> filter(BookSearchCriteria criteria, int page, int size) {
+
+        Pageable pageable = getPageable(page, size);
+
+        Specification<Book> specification = Specification
+                .where(hasTitle(criteria.title()))
+                .and(hasStatus(criteria.status()))
+                .and(hasCategory(criteria.categoryIdSet()))
+                .and(hasAuthor(criteria.authorIdSet()))
+                .and(hasFullQuantityBetween(criteria.minFullQuantity(), criteria.maxFullQuantity()))
+                .and(hasAvailableQuantityBetween(criteria.minAvailableQuantity(), criteria.maxAvailableQuantity()));
+
+        Page<Book> bookPage = bookRepository.findAll(specification, pageable);
+
+        Page<BookSummaryResponse> bookSummaryResponsePage = bookPage.map(BookMapper::toBookSummaryResponse);
+
+        return PageResponse.of(bookSummaryResponsePage);
     }
 
     @Override
